@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psicoanálisis - Cátedra Pino</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            --accent: #3498db;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 2.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        header h1 { font-size: 1.8rem; margin-bottom: 0.5rem; }
+        header p { opacity: 0.8; font-weight: 300; }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            flex-grow: 1;
+        }
+
+        .welcome-text {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        /* Grilla de Módulos */
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .module-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--primary);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Efecto al pasar el mouse */
+        .module-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: var(--accent);
+        }
+
+        .module-number {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            color: var(--accent);
+        }
+
+        .module-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        /* Estilo para módulos no disponibles */
+        .module-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            background: #eee;
+        }
+        .module-card.disabled:hover { transform: none; border-color: transparent; }
+
+        .badge-soon {
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            background: #95a5a6;
+            color: white;
+            font-size: 0.6rem;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            opacity: 0.6;
+        }
+
+        @media (max-width: 600px) {
+            .modules-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Psicoanálisis Freud (49)</h1>
+    <p>Cátedra: Pino | Repositorio de Módulos</p>
+</header>
+
+<div class="container">
+    <div class="welcome-text">
+        <h2>Selecciona un Módulo para comenzar</h2>
+    </div>
+
+    <div class="modules-grid">
+
+        <!-- Módulo 0 -->
+        <a href="#" class="module-card disabled">
+            <div class="badge-soon">Próximamente</div>
+            <div class="module-number">0</div>
+            <div class="module-title">Introducción</div>
+        </a>
+
+        <!-- Módulo A (EL QUE YA TENES HECHO) -->
+        <a href="modulo-a.html" class="module-card">
+            <div class="module-number">A</div>
+            <div class="module-title">Síntoma y Trauma I</div>
+        </a>
+
+        <!-- Módulo B -->
+        <a href="#" class="module-card disabled">
+            <div class="badge-soon">Próximamente</div>
+            <div class="module-number">B</div>
+            <div class="module-title">Módulo B</div>
+        </a>
+
+        <!-- Módulo C -->
+        <a href="#" class="module-card disabled">
+            <div class="badge-soon">Próximamente</div>
+            <div class="module-number">C</div>
+            <div class="module-title">Módulo C</div>
+        </a>
+
+        <!-- Módulo D -->
+        <a href="#" class="module-card disabled">
+            <div class="badge-soon">Próximamente</div>
+            <div class="module-number">D</div>
+            <div class="module-title">Módulo D</div>
+        </a>
+
+        <!-- Módulo E -->
+        <a href="#" class="module-card disabled">
+            <div class="badge-soon">Próximamente</div>
+            <div class="module-number">E</div>
+            <div class="module-title">Módulo E</div>
+        </a>
+
+        <!-- Módulo F -->
+        <a href="#" class="module-card disabled">
+            <div class="badge-soon">Próximamente</div>
+            <div class="module-number">F</div>
+            <div class="module-title">Módulo F</div>
+        </a>
+
+        <!-- Módulo G -->
+        <a href="#" class="module-card disabled">
+            <div class="badge-soon">Próximamente</div>
+            <div class="module-number">G</div>
+            <div class="module-title">Módulo G</div>
+        </a>
+
+        <!-- Módulo H -->
+        <a href="#" class="module-card disabled">
+            <div class="badge-soon">Próximamente</div>
+            <div class="module-number">H</div>
+            <div class="module-title">Módulo H</div>
+        </a>
+        
+    </div>
+</div>
+
+<footer>
+    Material de estudio - 2024
+</footer>
+
+</body>
+</html>

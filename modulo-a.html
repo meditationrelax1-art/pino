@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psicoanálisis - Módulo A</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            /* Colores de Instancias */
+            --color-practico: #3498db;
+            --bg-practico: #dcf0fa;
+            --color-seminario: #e67e22;
+            --bg-seminario: #fbe6d6;
+            --color-teorico: #27ae60;
+            --bg-teorico: #e2f3e5;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .module-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .module-nav button {
+            padding: 6px 10px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .module-nav button.active { background: white; color: var(--primary); }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        /* Cuadros de Contenido del Programa */
+        .info-box {
+            border: 1px solid #333;
+            padding: 15px;
+            margin: 25px 0 15px 0;
+            font-size: 0.85rem;
+            text-align: justify;
+            border-radius: 4px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .info-practico { background-color: var(--bg-practico); }
+        .info-seminario { background-color: var(--bg-seminario); }
+        .info-teorico { background-color: var(--bg-teorico); }
+
+        .info-box strong { font-weight: 700; }
+
+        /* Títulos de Sección */
+        .section-divider {
+            margin-top: 30px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+        }
+
+        /* Estilos del Acordeón */
+        .accordion-item {
+            background: var(--white);
+            margin-bottom: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 5px solid #ccc;
+            /*position: relative;*/
+        }
+
+        .item-practico { border-left-color: var(--color-practico); }
+        .item-seminario { border-left-color: var(--color-seminario); }
+        .item-teorico { border-left-color: var(--color-teorico); }
+
+        .accordion-header {
+            width: 100%;
+            padding: 15px 40px 15px 15px;
+            background: var(--white);
+            border: none;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 800;
+            color: white;
+            width: fit-content;
+            margin-bottom: 5px;
+        }
+        .badge-practico { background: var(--color-practico); }
+        .badge-seminario { background: var(--color-seminario); }
+        .badge-teorico { background: var(--color-teorico); }
+
+        .accordion-header .titulo {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .accordion-header::after {
+            content: '›';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #bbb;
+            transition: 0.3s;
+        }
+        .active .accordion-header::after { transform: translateY(-50%) rotate(90deg); }
+
+        /* Contenido Desplegable */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: #fafafa;
+        }
+
+        .content-inner {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        /* CONFIGURACIÓN DEFINITIVA DE PÁRRAFOS */
+        .content-inner p {
+            display: block !important;
+            width: 100% !important;
+            text-align: justify !important;
+            text-justify: inter-word !important;
+            margin-bottom: 1.2rem !important;
+            hyphens: none !important;
+            white-space: normal !important;
+        }
+
+        .content-inner p:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        .content-inner ul {
+            margin: 10px 0 15px 20px;
+        }
+
+        .content-inner li {
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+        /* Colores para los Títulos de Sección */
+        .section-practico { color: var(--color-practico) !important; border-bottom-color: var(--color-practico) !important; }
+        .section-seminario { color: var(--color-seminario) !important; border-bottom-color: var(--color-seminario) !important; }
+        .section-teorico { color: var(--color-teorico) !important; border-bottom-color: var(--color-teorico) !important; }
+
+        /* Colores para los Títulos de los Textos */
+        .item-practico .titulo { color: var(--color-practico) !important; }
+        .item-seminario .titulo { color: var(--color-seminario) !important; }
+        .item-teorico .titulo { color: var(--color-teorico) !important; }
+
+        .module-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+        justify-content: center;
+        }
+
+        /* Estilo para los nuevos botones (enlaces) */
+        .nav-btn {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none; /* Quita el subrayado del link */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .nav-btn.active { 
+            background: white; 
+            color: var(--primary); 
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.2rem; }
+            header h3 { font-size: 0.9rem; }
+            .info-box { font-size: 0.8rem; }
+            .accordion-header .titulo { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Psicoanálisis Freud (49)</h1>
+    <h3>Cátedra: Pino. Módulos.</h3>
+    <div class="module-nav">
+    <!-- Botón de Inicio con Icono de Casa -->
+    <a href="index.html" class="nav-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+    </a>
+    
+    <a href="#" class="nav-btn">0</a>
+    <a href="modulo-a.html" class="nav-btn active">A</a>
+    <a href="#" class="nav-btn">B</a>
+    <a href="#" class="nav-btn">C</a>
+    <a href="#" class="nav-btn">D</a>
+    <a href="#" class="nav-btn">E</a>
+    <a href="#" class="nav-btn">F</a>
+    <a href="#" class="nav-btn">G</a>
+    <a href="#" class="nav-btn">H</a>
+</div>
+</header>
+
+<div class="container">
+
+    <!-- SECCIÓN PRÁCTICOS -->
+    <h2 class="section-divider section-practico">Prácticos</h2>
+    
+    <div class="info-box info-practico">
+        <strong>Módulo A, Prácticos: Síntoma-Trauma I / La pregunta por la causa</strong> (Clases 2 y 3). 
+        <strong>Contenidos:</strong> La pasión etiológica. Causa y responsabilidad. La sexualidad como causa de las neurosis: Etiología sexual e infantil. Referente clínico: Emma. Constitución del trauma en dos tiempos. Efecto retardado (<i>nächtreglich</i>). Proton-pseudos histérica y síntoma. Primera nosología: Neurosis actuales - Neuropsicosis de defensa. Neurosis mixtas.
+    </div>
+
+    <div class="accordion-item item-practico">
+        <button class="accordion-header">
+            <span class="badge badge-practico">MAP 1</span>
+            <span class="titulo">1. La sexualidad en la etiología de las neurosis (1898).</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Obras completas, Tomo III, Buenos Aires, Amorrortu, 1989.</h5><hr><br>
+                <p>Sigmund Freud sostiene que los factores de la <b>vida sexual</b> constituyen la <b>«etiología sexual» primaria</b>, es decir, la causa <i>específica y necesaria</i> 
+                    de <b>todas las afecciones neuróticas</b>, relegando a un segundo plano factores como <i>la herencia</i> o el <i>agotamiento intelectual</i> (surménage).</p>
+                
+                <p>Para el autor, el médico tiene el deber ético de investigar la vida íntima del paciente con «sinceridad médica», rompiendo con la «mojigatería» o pudor excesivo 
+                    de la sociedad y la academia, ya que el ocultamiento de estos factores impide tanto el diagnóstico preciso como la prevención eficaz de la enfermedad.</p>
+                
+                <p>El argumento se articula en una división fundamental del cuadro clínico. Por un lado, se encuentran las <b>«neurosis actuales»</b>, denominadas así porque <b>su causa 
+                    reside en una anomalía de la vida sexual <i>presente</i> del sujeto</b>.</p>
+                
+                <p>Dentro de este grupo, Freud distingue la <b>«neurastenia»</b>, vinculada mecánicamente a la <b>«masturbación» excesiva</b> o a <b>poluciones frecuentes</b>, y la <b>«neurosis de angustia»</b>, 
+                    originada por una <b>«libido desviada»</b> de su meta normal.</p>
+                
+                <p>En esta última, la <b>«angustia»</b> se define como el resultado de una <b>tensión sexual acumulada</b> que <i>no encuentra una satisfacción adecuada</i>, frecuentemente 
+                    debido a prácticas como el <b>«coitus interruptus»</b> (interrupción del acto sexual antes de la eyaculación para evitar la concepción) o <b>la abstinencia forzada</b>.</p>
+                
+                <p>Por otro lado, el autor identifica las <b>«psiconeurosis»</b>, categoría que incluye a la <b>histeria</b> y la <b>neurosis obsesiva</b>. 
+                    A diferencia de las actuales, sus causas no son evidentes para el enfermo, ya que remiten a la <b>«sexualidad infantil»</b>, reconociendo que la actividad sexual 
+                    no se inicia en la pubertad, sino que existen operaciones libidinosas desde los primeros años de vida.</p> 
+                    
+                <p>Estas vivencias infantiles actúan mediante un <b>«efecto retardado» (Nachträglichkeit)</b>: huellas psíquicas que <b>no son traumáticas en el momento en que ocurren</b>, 
+                    pero que <b>adquieren poder</b> patógeno años después <b>al ser reactivadas</b> por la maduración del sujeto. </p>
+                <p>Para abordar estos casos, Freud propone el «psicoanálisis», un procedimiento que busca explorar lo inconsciente para reintegrar esos recuerdos olvidados a la conciencia. </p>
+                <p>Finalmente, el texto <b>vincula la salud nerviosa con problemas sociales</b> como el <b>«malthusianismo»</b> (la limitación de la descendencia), señalando que <b>la falta de técnicas 
+                    de «anticoncepción» seguras e inocuas</b> obliga a los matrimonios a recurrir a prácticas nocivas, <b>convirtiendo la insatisfacción sexual en una fuente masiva de neurosis</b>
+                    que la civilización debe aprender a mitigar.</p>
+                
+                <p><strong>División clínica:</strong></p>
+                <ul>
+                    <li><strong>Neurosis actuales:</strong> Su causa reside en una anomalía de la vida sexual presente (Neurastenia y Neurosis de angustia).</li>
+                    <li><strong>Psiconeurosis:</strong> (Histeria y obsesiva) Remiten a la sexualidad infantil mediante un <i>efecto retardado (Nachträglichkeit)</i>.</li>
+                </ul><hr>
+            <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+                            <p>Imaginá que Freud es como un <b>médico detective del corazón</b> 💙🔍. Acá te lo cuento con ejemplos sencillos:</p>
+
+                <p><b>🧸 Tu mente es como una casita con dos cuartos:</b></p>
+                <ul>
+                    <li>🚪 <b>Cuarto de "ahora":</b> Lo que te pasa hoy: relaciones, gustos, miedos.</li>
+                    <li>🗝️ <b>Cuarto de "chiquito":</b> Cosas que viviste de bebé o niño, que quizás ni recordás.</li>
+                </ul>
+                <p><i>"Para entender por qué alguien está triste o ansioso, hay que visitar los dos cuartos."</i></p>
+
+                <hr>
+
+                <p><b>🔍 Dos tipos de "dolores de mente" (neurosis):</b></p>
+                
+                <p><b>🟢 1. Las de "ahora" (Neurosis actuales)</b><br>
+                Son como cuando se te traba el celular porque tiene <i>demasiadas apps abiertas hoy</i>:</p>
+                <ul>
+                    <li>😓 <b>Neurastenia:</b> Gastar mucha energía en solitario. Como correr en la rueda del hámster: te cansás, pero no avanzás.</li>
+                    <li>😰 <b>Neurosis de angustia:</b> Querer conectar... pero no poder terminar de hacerlo. Como tener hambre y que te saquen el plato justo antes de comer. ¡Qué bronca! 😤</li>
+                </ul>
+                <p>👉 En ambas, el "motorcito del cariño" (la libido) no encuentra salida tranquila, y esa energía se transforma en <b>angustia, cansancio o miedo</b>.</p>
+
+                <p><b>🔵 2. Las de "antes" (Psiconeurosis)</b><br>
+                Son como encontrar un juguete viejo y, sin saber por qué, te emociona:</p>
+                <ul>
+                    <li>🎭 <b>Histeria:</b> Algo que viviste de chiquito y tu cuerpo "lo guarda" sin palabras. Como un abrazo a los 3 años: no lo recordás, pero tu cuerpo sí.</li>
+                    <li>🔁 <b>Neurosis obsesiva:</b> Pensamientos que dan vueltas como un disco rayado. Como tararear una canción sin querer... pero es una preocupación.</li>
+                </ul>
+                <p>✨ <b>El truco mágico:</b> Estas cosas no duelen <i>en el momento</i>, sino <b>años después</b>, cuando crecemos y las "encendemos" sin querer. Freud lo llamó <i>"efecto retardado"</i> (Nachträglichkeit).</p>
+
+                <hr>
+
+                <p><b>🩺 ¿Y qué hace el médico?</b></p>
+                <p>Freud decía: <i>"Para ayudar de verdad, hay que preguntar con cariño y sin vergüenza"</i>. No es ser chismoso: es armar el rompecabezas completo.</p>
+                <p>🗝️ <b>"Si el paciente se calla por vergüenza, el médico no ve la pieza que falta."</b></p>
+
+                <p><b>🌍 ¿Y la sociedad? ¡También juega!</b></p>
+                <p>Imaginá un pueblo donde:</p>
+                <ul>
+                    <li>✅ Se puede querer mucho...</li>
+                    <li>❌ Pero no se puede tener hijos cuando uno quiere...</li>
+                    <li>❌ Y no hay formas seguras de cuidarse...</li>
+                </ul>
+                <p>👉 Entonces, las personas usan métodos que <b>no las dejan disfrutar en paz</b>, y esa frustración... ¡se convierte en ansiedad o tristeza!</p>
+                <p><i>Freud no culpaba a las personas: señalaba que a veces las "reglas del juego" de la sociedad hacen más difícil estar bien.</i></p>
+
+                <hr>
+                <p><b>🎈 Resumen visual:</b></p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #0d6efd; font-family:monospace; font-size:0.9em;">
+🧠 ¿Por qué duele la mente?<br><br>
+├─ 🟢 Causas de "HOY" (Neurosis actuales)<br>
+│  ├─ 😓 Neurastenia → "Gasto mucha energía solo"<br>
+│  └─ 😰 Neurosis de angustia → "Quiero, pero no puedo terminar"<br>
+│<br>
+├─ 🔵 Causas de "AYER" (Psiconeurosis)<br>
+│  ├─ 🎭 Histeria → "Mi cuerpo guarda recuerdos sin palabras"<br>
+│  └─ 🔁 Obsesiva → "Mis pensamientos dan vueltas como un carrusel"<br>
+│<br>
+└─ 🌍 Causas de "TODOS" (Sociedad)<br>
+   └─ 🚫 "Si no hay formas sanas de querer y cuidarse... la frustración se acumula"
+                </p>
+
+                <p><b>✨ La gran enseñanza:</b><br>
+                <i>"No hay que tener miedo de mirar lo que sentimos, ni de lo que vivimos de chiquitos. Entender no es juzgar: es el primer paso para sanar."</i></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item item-practico">
+        <button class="accordion-header">
+            <span class="badge badge-practico">MAP 2</span>
+            <span class="titulo">2. Proyecto de psicología: La proton pseudos (1895)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S., (1950 [1895]) “Proyecto de psicología, Parte II. Psicopatología, [4]. La proton pseudos histérica”. 
+                    En Obras completas, Tomo I, Buenos Aires, Amorrortu, 1988, pp. 400-404.</h5><hr><br>
+                <p>Sigmund Freud introduce el concepto de <b>«proton pseudos»</b> o <b>primera mentira
+                    histérica</b> para explicar el origen de la <b>«compulsión histérica»</b>, <i>una conducta
+                    irracional e irresistible</i> que, en el caso de su paciente Emma, se manifiesta como <i>la
+                    incapacidad de entrar sola a tiendas</i>.</p> 
+
+                    <p>El término, tomado de la lógica aristotélica,
+                    alude a una premisa mayor <i>falsa</i> dentro de un silogismo psíquico que <b>conduce a
+                    una conclusión errónea</b> pero aparentemente <b>coherente para el sujeto</b>.</p>
+
+                    <p>En la histeria, <i>esta mentira se constituye mediante un proceso de defensa del yo</i> 
+                    que <b>desplaza el interés de una vivencia traumática</b> hacia una <b>representación inocente o
+                    «símbolo»</b>, como <b>el vestido</b> en el caso analizado.</p>
+
+                    <p>A través del historial de Emma, Freud identifica <b>dos escenas fundamentales</b> cuya
+                    conexión es <i>opaca para la conciencia</i>.</p>
+                    
+                    <p>La <b>Escena I</b> ocurre a los doce años, cuando
+                    Emma huye de una tienda tras ver a dos empleados reírse, creyendo que se burlan
+                    de su ropa. Sin embargo, la investigación descubre una <b>Escena II previa</b>, ocurrida a
+                    los ocho años, en la que un pastelero le pellizcó los genitales a través de la ropa
+                    mientras reía.</p>
+
+                    <p>Lo crucial en este mecanismo es el <b>«efecto retardado»
+                    (Nachträglichkeit)</b>: en la infancia, el atentado sexual no despertó un afecto masivo
+                    porque el sujeto carecía de la madurez biológica para procesarlo sexualmente. Es
+                    solo con la llegada de la «pubertad» que el recuerdo de la risa en la tienda asocia
+                    ambas escenas, provocando ahora un «desprendimiento sexual» (una liberación
+                    súbita de energía afectiva) que, al no poder ser asimilado, se traspone en angustia.</p>
+
+                    <p>Ante esta <b>irrupción de afecto insoportable</b>, el "yo" recurre a la <b>represión</b> y a la
+                    <b>formación de «enlaces falsos»</b>. Estos son <i>nexos lógicos incorrectos</i> que el
+                    pensamiento consciente construye para dar una explicación racional a un afecto
+                    <i>cuyo origen real permanece oculto</i>; así, <i>Emma concluye que su miedo <b>se debe a su
+                    vestimenta y no al trauma sexual recordado</b></i>.</p>
+
+                    <p>De este modo, <i>el síntoma se vuelve un
+                    mecanismo de protección</i> basado en una <b>premisa falsa</b>, ocultando la verdadera
+                    causa traumática infantil <b>bajo el velo de la primera mentira histérica</b>. El germen de
+                    la patología reside, por tanto, en la desproporción temporal entre el desarrollo
+                    biológico-sexual y el psíquico, lo que permite que <i>un recuerdo adquiera carácter
+                    traumático con posterioridad a la vivencia original</i>.</p><hr>
+
+                    <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+
+                <p>Imaginá que Freud es como un <b>detective de recuerdos</b> 🕵️‍♂️🧠. Acá te cuento la historia de Emma como si fuera un cuento:</p>
+
+                <p><b>🎭 La "primera mentira" que nos cuenta nuestra mente:</b></p>
+                <p>Tu cerebro es como un <b>director de cine</b> 🎬 que a veces <i>cambia la escena de una película</i> para que no te asustes tanto.</p>
+                <p>🗝️ <b>Proton pseudos</b> = "La primera mentira histérica". No es que Emma mienta a propósito... ¡es que su mente arma una explicación "falsa pero cómoda" para no enfrentar algo que duele mucho!</p>
+
+                <hr>
+
+                <p><b>🧩 El misterio de Emma: ¿Por qué no puede entrar sola a las tiendas?</b></p>
+                <table style="width:100%; border-collapse:collapse; margin:10px 0; font-size:0.95em;">
+                    <tr style="background:#f8f9fa;">
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Lo que Emma siente</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Lo que ella cree</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Lo que realmente pasa</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">😰 Miedo, angustia, corazón acelerado</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">"Tengo miedo porque mi ropa no está bien"</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">"Hay un recuerdo escondido de cuando era chiquita"</td>
+                    </tr>
+                </table>
+
+                <p><b>🔍 Dos escenas, una conexión oculta:</b></p>
+                
+                <p><b>🎬 Escena 1 (a los 12 años) → La que Emma recuerda</b><br>
+                Emma entra a una tienda, ve a dos empleados riéndose... y <b>sale corriendo</b>.<br>
+                Ella piensa: <i>"Se ríen de mi ropa"</i>. Pero... ¿es esa la verdadera razón?</p>
+                
+                <p><b>🎬 Escena 2 (a los 8 años) → La que estaba escondida</b><br>
+                Cuatro años antes, un pastelero <b>la tocó de manera incómoda</b> a través de la ropa... <b>mientras se reía</b>.<br>
+                En ese momento, Emma no entendió bien qué pasaba (era muy chiquita), así que su mente "guardó" esa escena en una cajita cerrada 🎁.</p>
+
+                <hr>
+
+                <p><b>⏰ El truco del tiempo: "Efecto retardado" (Nachträglichkeit)</b></p>
+                <p>Imaginá que tenés una <b>semillita</b> 🌱 que no brota inmediatamente:</p>
+                <ul>
+                    <li>🧒 <b>8 años:</b> Vive algo incómodo, pero no lo entiende → Su mente aún no está "lista" para procesarlo.</li>
+                    <li>👧 <b>12 años:</b> Escucha risas en una tienda → ¡PUM! Se conecta con la escena de los 8 → La cajita se abre 💥</li>
+                </ul>
+                <p>✨ <b>La magia (y el problema):</b> El miedo no viene de la ropa... viene de que <i>la risa de hoy le recordó la risa de aquella vez</i>, y toda esa emoción guardada salió de golpe como angustia.</p>
+
+                <p><b>🧠 ¿Cómo se protege la mente? Con "enlaces falsos"</b></p>
+                <p>Cuando el miedo es muy fuerte y no entendemos de dónde viene, nuestra mente hace algo creativo (pero engañoso):</p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #ffc107; font-family:monospace; font-size:0.9em; margin:10px 0;">
+❌ Lo que duele: "Recuerdo algo que me pasó y no puedo procesarlo"<br>
+✅ Lo que inventa: "Tengo miedo por mi ropa"
+                </p>
+                <p>🎭 Es como si tu cerebro dijera: <i>"Mejor le echamos la culpa a la ropa... porque enfrentar lo otro duele demasiado"</i>.</p>
+                <p>Así nace el <b>síntoma</b>: evitar tiendas no es capricho, es un <b>escudo</b> que arma el yo para no tocar el recuerdo real 🛡️.</p>
+
+                <hr>
+
+                <p><b>🧭 La gran idea en una frase:</b></p>
+                <p><i>"A veces, lo que nos asusta hoy no es lo que vemos... sino lo que esa escena nos recuerda de algo que vivimos antes y no pudimos entender."</i></p>
+
+                <p><b>🎈 Resumen visual:</b></p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #0d6efd; font-family:monospace; font-size:0.9em;">
+🔍 El misterio de Emma<br><br>
+1️⃣ Escena real (8 años):<br>
+   👉 Toqueteo + risa del pastelero → "Cajita cerrada" 🎁<br><br>
+2️⃣ Escena disparadora (12 años):<br>
+   👉 Risas en tienda + cuerpo más maduro → ¡La cajita se abre! 💥<br><br>
+3️⃣ La mente se protege:<br>
+   👉 "No fue eso... fue mi ropa" 🎭 ← ¡Primera mentira histérica!<br><br>
+4️⃣ Resultado:<br>
+   👉 Síntoma: no entrar sola a tiendas = escudo contra el dolor real 🛡️
+                </p>
+
+                <p><b>✨ Lo más importante:</b><br>
+                <i>"Los síntomas no son enemigos: son mensajes disfrazados. Si aprendemos a escucharlos con cariño, podemos descubrir qué necesita sanar."</i></p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN SEMINARIOS -->
+    <h2 class="section-divider section-seminario">Seminarios</h2>
+
+    <div class="info-box info-seminario">
+        <strong>Módulo A, Seminarios: La Terapéutica Freudiana</strong> (Clases 2 y 3). 
+        <strong>Contenidos:</strong> Ruptura con la hipnosis. Diferencia entre sugestión y terapéutica freudiana. Referente clínico: <i>Elisabeth von R.</i> Ordenamiento en tres periodos, lógica de la cura. Tres estatutos del cuerpo: orgánico, de palabra, de satisfacción paradojal. Zona histerógena. Expresión simbólica en el síntoma somático. Resistencias en la cura. Diferencia entre recuerdo y reminiscencias. El problema de la readmisión.
+    </div>
+
+    <div class="accordion-item item-seminario">
+        <button class="accordion-header">
+            <span class="badge badge-seminario">MAS 1</span>
+            <span class="titulo">3. Historial de la Srta. Elisabeth Von R. (1893)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. (1893 [1895]). Capítulo II. Historiales clínicos. Punto5. Señorita
+                Elisabeth Von R. Estudios sobre la histeria (Breuer y Freud). En Obras completas,
+                Tomo II. Buenos Aires. Amorrortu. 2012</h5><hr><br>
+
+                    <p>El historial clínico de la Srta. Elisabeth von R., constituye una pieza fundamental
+                    para la comprensión de la <b><i>«histeria de defensa»</i></b>, una patología que <b>surge a partir de
+                    un conflicto entre la conciencia moral</b> del sujeto <b>y una «representación
+                    inconciliable»</b>.</p>
+                    <p>Este término técnico designa a <b>una idea, deseo o recuerdo</b> (en este
+                    caso, el <i>amor secreto de la paciente por su cuñado</i>) que resulta <b>éticamente
+                    inaceptable para el "yo"</b> y que, por tanto, <b><i>es desalojado de la asociación consciente
+                    a través de un acto de voluntad denominado «defensa»</i></b>.</p>
+                    
+                    <p>Sin embargo, Freud advierte que <b>este rechazo no anula la carga emocional</b> o «monto de afecto» 
+                    de la idea, sino que <b>lo obliga a buscar una vía de descarga alternativa</b> a través de la «conversión»,
+                    un mecanismo psicopatológico mediante el cual el sufrimiento anímico se
+                    trasforma en una inervación o sensación corporal, como los dolores en las piernas
+                    y la dificultad para caminar (abasia) que padecía Elisabeth.</p>
+
+                    <p>La formación de estos síntomas no es producto del azar, sino que responde a un
+                    estricto «determinismo», principio según el cual cada manifestación física está
+                    configurada por vivencias traumáticas específicas. La elección del síntoma se
+                    apoya en un «nexo asociativo» o conexión lógica entre el trauma y el cuerpo; por
+                    ejemplo, el foco de los dolores se localizó en una «zona histerógena» en el muslo
+                    derecho, región que coincidía con el lugar donde descansaba la pierna enferma del
+                    padre de Elisabeth mientras ella lo cuidaba. Este vínculo espacial entre la labor de
+                    cuidadora y la emergencia del dolor físico permitió que la neurosis utilizara un
+                    malestar orgánico previo para simbolizar el conflicto psíquico. Este proceso se
+                    refuerza mediante la «simbolización», donde el dolor anímico busca expresión a
+                    través de metáforas lingüísticas que el cuerpo toma de forma literal: giros como «no
+                    poder avanzar un paso» o «no tener apoyo» en la vida se trasmutan en una parálisis
+                    funcional que refleja la impotencia de la paciente ante sus circunstancias
+                    familiares.
+                    La eclosión de la enfermedad se produce por una «sumación de traumas», una
+                    acumulación de impresiones penosas —como la muerte del padre y la posterior
+                    pérdida de la hermana— que saturan la capacidad de tolerancia del individuo hasta
+                    forzar la conversión. Durante el tratamiento, Freud identificó la «resistencia», 
+                    una oposición inconsciente que el paciente ejerce para evitar que los recuerdos
+                    reprimidos retornen a la conciencia, manifestándose como bloqueos o silencios
+                    durante la sesión. El objetivo terapéutico es lograr la «abreacción», la descarga de
+                    la tensión afectiva estrangulada a través de la palabra y el recuerdo vivido. Al obligar
+                    a la paciente a verbalizar el secreto oculto y reintegrar la representación
+                    inconciliable a su pensamiento consciente, el afecto se desgasta y el síntoma
+                    corporal, al perder su función de subrogado del dolor anímico, desaparece
+                    definitivamente.</p>
+
+                    <hr>
+
+                    <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+                                    <p>Imaginá que Freud es como un <b>traductor del cuerpo</b> 🗣️💙. Acá te cuento la historia de Elisabeth como si fuera un cuento con moraleja:</p>
+
+                <p><b>🎭 Cuando el corazón dice "no puedo" y las piernas escuchan:</b></p>
+                <p>Tu cuerpo es como un <b>teléfono sin cables</b> 📞: a veces, lo que no podés decir con la boca... ¡te lo dice con el cuerpo!</p>
+                <p>🗝️ <b>Histeria de defensa</b> = Cuando tu mente esconde un secreto muy doloroso, y tu cuerpo "habla" por vos con dolores o síntomas.</p>
+
+                <hr>
+
+                <p><b>🧩 El secreto de Elisabeth: ¿Por qué le dolían las piernas?</b></p>
+                <table style="width:100%; border-collapse:collapse; margin:10px 0; font-size:0.95em;">
+                    <tr style="background:#f8f9fa;">
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Lo que sentía</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Lo que decía</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Lo que realmente pasaba</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">😰 Dolores en piernas, no podía caminar</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">"Es algo físico, me duele y ya"</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">"Hay un amor secreto que no puedo aceptar... y mi cuerpo lo convierte en dolor"</td>
+                    </tr>
+                </table>
+
+                <p><b>🔍 La "idea que no entra" (representación inconciliable):</b></p>
+                <p>Imaginá que tenés un <b>pensamiento como un globo rojo</b> 🎈 que dice: <i>"Me enamoré de mi cuñado"</i>. Pero tu "brújula interna" 🧭 dice: <i>"¡Eso no está bien!"</i>.</p>
+                <p>Entonces, tu mente hace algo creativo:</p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #ffc107; font-family:monospace; font-size:0.9em; margin:10px 0;">
+                    ❌ Paso 1: "No quiero sentir esto" → Empujo el globo al sótano 🚫<br>
+                    ❌ Paso 2: Pero el globo tiene HELIO (emoción) → ¡No se queda quieto! 🎈💨<br>
+                    ❌ Paso 3: El helio busca salida → Se escapa por las piernas → ¡DOLOR! 💥
+                </p>
+                <p>✨ <b>La conversión:</b> El dolor no es "inventado"... es la <b>emoción que no pudo salir por la palabra</b>, y salió por el cuerpo.</p>
+
+                <hr>
+
+                <p><b>🎯 ¿Por qué DUELE justo ahí?</b></p>
+                <p>Freud notó que los síntomas <b>no son al azar</b>. Son como un mapa del tesoro 🗺️:</p>
+                <ul>
+                    <li>🦵 <b>Dolor en el muslo derecho:</b> Era el lugar donde apoyaba la pierna de su papá enfermo mientras lo cuidaba.</li>
+                    <li>🚶 <b>"No puedo caminar":</b> Metáfora de "no puedo avanzar" en su vida: entre el deber familiar y su deseo secreto.</li>
+                </ul>
+                <p>🎭 <b>Simbolización:</b> Cuando decimos <i>"no doy un paso más"</i> o <i>"no tengo apoyo"</i>, el cuerpo a veces lo toma <b>literal</b>. ¡El cuerpo escucha las metáforas del alma!</p>
+
+                <p><b>💣 La "gota que rebalsó el vaso" (Sumación de traumas):</b></p>
+                <p>Imaginá que tu capacidad de aguantar es como una <b>mochila</b> 🎒:</p>
+                <ul>
+                    <li>🪨 Cuidar a papá enfermo</li>
+                    <li>🪨 Verlo morir</li>
+                    <li>🪨 Perder a su hermana</li>
+                    <li>🪨 El secreto del amor prohibido</li>
+                </ul>
+                <p>👉 Cuando la mochila está <b>demasiado llena</b>... ¡PUM! Algo tiene que salir. Y sale como síntoma.</p>
+
+                <hr>
+
+                <p><b>🩺 ¿Y cómo se cura? ¡Hablando! (Abreacción)</b></p>
+                <p>Freud descubrió que para sanar, hay que <b>abrir la cajita del secreto</b> 🎁:</p>
+                <p style="background:#d1e7dd; padding:12px; border-left:4px solid #198754; font-family:monospace; font-size:0.9em; margin:10px 0;">
+🔒 Antes: Secreto guardado → Emoción atrapada → Dolor en el cuerpo<br>
+🗝️ Terapia: Palabra + recuerdo vivido → Emoción liberada → El cuerpo descansa
+                </p>
+                <p>🗣️ <b>Abreacción</b> = "Desahogo con palabra": cuando Elisabeth pudo decir <i>"Amé a mi cuñado y me siento culpable"</i>, la emoción perdió fuerza... ¡y el dolor de piernas desapareció!</p>
+
+                <hr>
+
+                <p><b>🧭 La gran idea en una frase:</b></p>
+                <p><i>"El cuerpo no miente: cuando no podemos decir lo que sentimos, a veces lo escribimos con dolor. Escuchar ese mensaje es el primer paso para sanar."</i></p>
+
+                <p><b>🎈 Resumen visual:</b></p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #0d6efd; font-family:monospace; font-size:0.9em;">
+💙 El misterio de Elisabeth<br><br>
+1️⃣ Conflicto interno:<br>
+   👉 "Amo a mi cuñado" + "No debo sentir esto" → 💥<br><br>
+2️⃣ Defensa:<br>
+   👉 Mente: "¡Fuera de aquí!" 🚫<br>
+   👉 Emoción: "¿Y ahora por dónde salgo?" 💭<br><br>
+3️⃣ Conversión:<br>
+   👉 Emoción sin salida → Se transforma en dolor físico 🦵<br><br>
+4️⃣ Símbolo corporal:<br>
+   👉 "No puedo avanzar en la vida" → "No puedo caminar" 🚶‍♀️❌<br><br>
+5️⃣ Cura:<br>
+   👉 Hablar el secreto + llorar lo no llorado → El cuerpo se libera 🕊️
+                </p>
+
+                <p><b>✨ Lo más importante:</b><br>
+                <i>"No hay síntomas 'raros': hay mensajes que no supimos escuchar. Cuando el alma encuentra palabras, el cuerpo ya no necesita gritar."</i>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item item-seminario">
+        <button class="accordion-header">
+            <span class="badge badge-seminario">MAS 2</span>
+            <span class="titulo">4. Tratamiento psíquico (tratamiento del alma) (1890)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. (1890). Tratamiento psíquico (tratamiento del alma). En Obras
+                    completas, Tomo I. Buenos Aires. Amorrortu. 1988. </h5><hr><br>
+
+                <p>Sigmund Freud define el <b>«tratamiento psíquico»</b> o <b>«tratamiento del alma»</b>
+                (Seelenbehandlung) no simplemente como el abordaje de las enfermedades
+                mentales, sino como <b>una intervención terapéutica que opera desde lo anímico
+                hacia lo corporal o mental</b> utilizando <b>recursos que influyen de manera inmediata
+                sobre la psique humana</b>.</p>
+                <p>El <i>instrumento primordial</i> de esta práctica es <b>la palabra</b>,
+                la cual es descrita como un <b>«ensalmo»</b> o <b>fórmula mágica</b> desvanecida que la
+                ciencia busca rehabilitar para <b>devolverle su antiguo poder de transformación sobre
+                la salud</b>. Este enfoque se fundamenta en la <b>«acción recíproca» entre el cuerpo y el
+                alma</b>: un vínculo indisoluble donde lo biológico comanda lo mental, pero donde lo
+                anímico también ejerce una influencia profunda y medible sobre los procesos
+                orgánicos.</p>
+                
+                <p>La eficacia de este tratamiento descansa en <b>la gestión de los «afectos»</b>, definidos
+                como <b>estados emocionales intensos</b> (como la ira, el miedo o el júbilo) que se
+                exteriorizan mediante <b>cambios físicos</b> en la circulación, las secreciones y las
+                tensiones musculares, <b>pudiendo actuar como causas patógenas o agentes
+                curativos</b>. </p>
+                
+                <p>Junto a los afectos, Freud destaca la <b>«expectativa confiada»</b> como una
+                <b>fuerza anímica esencial</b>; se trata de <b>una disposición mental de fe y esperanza que
+                impulsa el éxito de cualquier terapia</b>, siendo <b>el motor secreto tras las «curas
+                milagrosas»</b> y el prestigio personal del médico. </p>
+                
+                <p>Para sistematizar este influjo, la medicina recurre a la <b>«hipnosis»</b>, 
+                un estado provocado <i>similar al sueño</i> donde se
+                eleva extraordinariamente el imperio del alma sobre lo corporal. En este estado, el
+                paciente establece un <b>«rapport» o vínculo de obediencia y atención exclusiva hacia
+                el médico</b>, una relación <i>análoga a la entrega absoluta</i> que un niño profesa a sus
+                padres o a un amor pleno.</p>
+
+                <p>Dentro de este marco, el médico utiliza la «sugestión», que es la comunicación
+                verbal destinada a implantar una idea o modificar una sensación física en el
+                paciente hipnotizado. Mediante la sugestión, la palabra recupera su valor de
+                ensalmo científico al ser capaz de paralizar miembros, suprimir dolores o generar
+                alucinaciones por puro influjo anímico. No obstante, el autor advierte sobre la
+                existencia de la «resistencia», una limitación del poder sugeridor que surge de la
+                voluntad o la idiosincrasia del enfermo. La sugestión no es omnipotente; su fuerza
+                debe competir con la intensidad del síntoma y el grado de sacrificio que la curación
+                exige al sujeto. De este modo, el tratamiento psíquico moderno se presenta como
+                un procedimiento que exige una intelección profunda de los procesos anímicos
+                para orientar conscientemente las fuerzas de la mente hacia la recuperación de la
+                salud.</p>
+
+                <hr>
+                <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+
+                <p>Imaginá que Freud es como un <b>mago científico</b> 🪄🔬 que redescubrió un poder antiguo: <b>hablar puede sanar</b>.</p>
+                <p>🗝️ <b>Tratamiento psíquico</b> = No es "solo charlar". Es usar la mente como una herramienta que puede calmar el cuerpo, aliviar dolores y equilibrar emociones.</p>
+
+                <hr>
+
+                <p><b>📻 Cuerpo y mente: dos walkie-talkies conectados</b></p>
+                <table style="width:100%; border-collapse:collapse; margin:10px 0; font-size:0.95em;">
+                    <tr style="background:#f8f9fa;">
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Si la mente dice...</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">El cuerpo responde...</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">😨 "Tengo miedo"</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">💓 Corazón acelerado, manos frías, músculos tensos</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">😊 "Estoy tranquilo"</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">🌬️ Respiración pausada, digestión mejor, dolor que baja</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">🔥 "Estoy furioso"</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">🌡️ Cara roja, presión alta, ganas de moverte</td>
+                    </tr>
+                </table>
+                <p>Freud lo llamaba <b>acción recíproca</b>: no es que uno mande y el otro obedezca. ¡Se hablan todo el tiempo! Y las <b>emociones intensas (afectos)</b> son como interruptores que encienden o apagan partes del cuerpo.</p>
+
+                <hr>
+
+                <p><b>💡 El "combustible secreto": la esperanza</b></p>
+                <p>Imaginá que tomás una medicina con dos vasos de agua:</p>
+                <ul>
+                    <li>🥛 <b>Vaso 1:</b> La pastilla real</li>
+                    <li>🌟 <b>Vaso 2:</b> <b>Creer de verdad que te va a ayudar</b> (la <i>expectativa confiada</i>)</li>
+                </ul>
+                <p>Freud decía que ese segundo vaso es el <b>motor interno</b>. Por eso los grandes médicos siempre inspiran confianza: <i>no es magia, es ciencia anímica</i>.</p>
+
+                <p><b>🛋️ Hipnosis, confianza y "sugestión"</b></p>
+                <p>Cuando Freud usaba <b>hipnosis</b>, no era control mental de película. Era más bien como entrar en un <b>sueño lúcido</b> donde:</p>
+                <ul>
+                    <li>🤝 Se crea un <b>vínculo de confianza</b> (<i>rapport</i>), como cuando un niño sigue a su papá o mamá sin dudar.</li>
+                    <li>🗣️ El médico usa la <b>sugestión</b>: palabras claras y calmadas que guían suavemente a la mente. Como un director que le dice a un actor <i>"imaginá que estás en la playa"</i>, y el cuerpo realmente se relaja.</li>
+                    <li>✨ Así, las palabras recuperan su poder de <b>"ensalmo"</b>: pueden calmar un dolor, soltar un músculo o cambiar una sensación... solo con influjo anímico.</li>
+                </ul>
+
+                <hr>
+
+                <p><b>🛡️ Pero cuidado: existe la "resistencia"</b></p>
+                <p>La sugestión <b>no es una varita mágica</b>. La mente tiene un <b>escudo interno</b> que a veces dice: <i>"Esperá, todavía no estoy listo"</i>. Si el síntoma es muy fuerte, o si sanar implica "perder algo" que la persona no quiere soltar... 👉 la sugestión debe <b>negociar, no imponer</b>.</p>
+                <p>Por eso el tratamiento psíquico exige <b>entender profundamente</b> cómo funciona la mente del paciente.</p>
+
+                <hr>
+
+                <p><b>🧭 La gran idea en una frase:</b></p>
+                <p><i>"Las palabras no son solo sonidos: son llaves. Si sabés cómo usarlas, podés abrir la puerta del cuerpo y dejar que la mente haga su trabajo de sanación."</i></p>
+
+                <p><b>🎈 Resumen visual:</b></p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #0d6efd; font-family:monospace; font-size:0.9em;">
+🧠 El tratamiento del alma según Freud<br><br>
+1️⃣ Cuerpo ↔ Mente = Walkie-talkies conectados 📻<br>
+2️⃣ Emociones fuertes (afectos) = Interruptores físicos 🔌<br>
+3️⃣ Esperanza + Confianza = Combustible secreto 🌟<br>
+4️⃣ Hipnosis + Rapport = Estado de atención y entrega segura 🤝<br>
+5️⃣ Sugestión = Palabras que guían suavemente al cuerpo 🗣️✨<br>
+6️⃣ Resistencia = El escudo que dice "esperá, negociemos" 🛡️<br>
+7️⃣ Meta final = Usar las fuerzas de la mente A PROPÓSITO para sanar 🌱
+                </p>
+
+                <p><b>✨ Lo más importante:</b><br>
+                <i>"La medicina no solo cura con pastillas. Cura con presencia, con confianza y con palabras que saben dónde tocar. Sanar también es un acto del alma."</i>
+            </p>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN TEÓRICOS -->
+    <h2 class="section-divider section-teorico">Teóricos</h2>
+
+    <div class="info-box info-teorico">
+        <strong>Módulo A, Teóricos: Génesis de los conceptos Freudianos</strong> (Clases 2 y 3). 
+        <strong>Contenidos:</strong> Función de la teoría y construcción de los conceptos en psicoanálisis. La ruptura con el discurso médico: parálisis orgánica, parálisis motrices, parálisis histérica. Pregunta por la causa. Trauma psíquico. Principio de constancia, aparato como arco reflejo. Doble conciencia.
+    </div>
+
+    <div class="accordion-item item-teorico">
+        <button class="accordion-header">
+            <span class="badge badge-teorico">MAT 1</span>
+            <span class="titulo">5. Pulsiones y destinos de pulsión (1915)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. (1915). “Pulsiones y destinos de pulsión”. En Obras completas, Tomo
+                    XIV. Buenos Aires. Amorrortu. 1990, p. 113. </h5><hr><br>
+                <p>Sigmund Freud sostiene que la actividad científica no se inicia, como se cree
+                habitualmente, con definiciones precisas y conceptos básicos claros. Por el
+                contrario, <b>el punto de partida correcto de cualquier ciencia</b>, incluso de las más
+                exactas, <b>consiste en la descripción de fenómenos</b> (aquellos hechos de la
+                experiencia que se presentan a la observación), los cuales deben ser
+                posteriormente <i>agrupados, ordenados e insertados en conexiones lógicas</i>.</p>
+
+                <p>En esta fase inicial, es inevitable aplicar al material empírico ciertas ideas abstractas que 
+                el investigador recoge de otras fuentes y que no emanan únicamente de la nueva
+                experiencia. Estos elementos, que con el tiempo se convertirán en los conceptos
+                básicos de la disciplina, poseen necesariamente un grado de indeterminación, por
+                lo que resulta imposible delimitar su contenido con exactitud en las etapas
+                tempranas de la investigación.</p>
+
+                <p>Mientras estos conceptos fundamentales permanecen en un estado de vaguedad,
+                operan bajo el carácter de convenciones. Estas se entienden como acuerdos
+                provisionales sobre el significado de un término que se establecen mediante la
+                remisión repetida al material empírico del cual parecen extraerse, pero al que en
+                realidad se le imponen para darle estructura.</p>
+
+                <p> Freud subraya que tales convenciones
+                no deben elegirse de manera azarosa, sino que deben estar determinadas por
+                relaciones significativas con los fenómenos, relaciones que se intuyen incluso
+                antes de que puedan ser demostradas formalmente. Solo después de una
+                exploración profunda del campo de estudio es posible aprehender estos conceptos
+                científicos con mayor exactitud, refinándolos para que resulten operativos en
+                ámbitos más vastos y queden exentos de contradicciones internas.</p>
+
+                <p>Es únicamente en este punto avanzado del desarrollo científico cuando el
+                conocimiento puede cristalizar en definiciones. Sin embargo, el autor advierte que
+                el progreso del conocimiento científico no tolera la rigidez; <b>las definiciones no son
+                estáticas</b>, sino que <i>experimentan un cambio constante de contenido a medida que
+                la ciencia avanza</i>, tal como sucede en disciplinas maduras como la física.</p>
+                
+                <p><i>Bajo este marco epistemológico, Freud <b>introduce el concepto de pulsión</b></i> 
+                (término que designa <i>una fuerza o estímulo proveniente del interior del organismo)</i> como un
+                <b>concepto básico e indispensable para la psicología.</b></p> 
+                
+                <p>Aunque reconoce que la pulsión es todavía una <i>convención oscura y carente de claridad definitiva</i>, 
+                la sitúa como <b>el punto de partida necesario para el desarrollo de la teoría psicoanalítica</b>,
+                requiriendo un esfuerzo posterior para llenar dicho concepto de contenido desde diversos ángulos de análisis.</p>
+
+                <hr>
+                <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+                                    <p>Imaginá que Freud es como un <b>explorador de ideas</b> 🗺️💡. Acá te explico cómo se construye la ciencia como si fuera una aventura:</p>
+
+                <p><b>🧭 La ciencia no empieza con respuestas... ¡empieza con preguntas!</b></p>
+                <p>Imaginá que querés armar un <b>rompecabezas gigante</b> 🧩 pero... ¡no tenés la imagen de la caja!</p>
+                <table style="width:100%; border-collapse:collapse; margin:10px 0; font-size:0.95em;">
+                    <tr style="background:#f8f9fa;">
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Lo que muchos creen</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Lo que Freud dice</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">"Primero definí todo perfecto, después investigá"</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">"Primero mirá, tocá, describí... las definiciones vienen después"</td>
+                    </tr>
+                </table>
+                <p>🗝️ <b>La ciencia es como dibujar un mapa mientras caminás</b>: no sabés todo al principio, pero cada paso te ayuda a entender mejor el terreno.</p>
+
+                <hr>
+
+                <p><b>🎈 Los "conceptos bebé": ideas que todavía están creciendo</b></p>
+                <p>Cuando empezamos a estudiar algo nuevo, usamos palabras que <b>todavía no están totalmente definidas</b>. Freud las llama <i>convenciones</i>:</p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #ffc107; font-family:monospace; font-size:0.9em; margin:10px 0;">
+🌱 Concepto "bebé" = Una idea que:<br>
+   • Aún es nebulosa ☁️<br>
+   • No tiene límites exactos 📏<br>
+   • Pero nos ayuda a empezar a organizar lo que vemos 🔍
+                </p>
+                <p>✨ <b>Ejemplo cotidiano:</b> Cuando un niño dice <i>"perrito"</i> para señalar un gato, un lobo o un zorro... no está "equivocado". Está usando una <b>etiqueta provisional</b> mientras su cerebro aprende las diferencias. ¡Así funciona la ciencia también!</p>
+
+                <hr>
+
+                <p><b>🔗 ¿Por qué no elegimos las palabras al azar?</b></p>
+                <p>Aunque los conceptos al principio sean vagos, <b>no son inventados a lo loco</b>. Se eligen porque:</p>
+                <ul>
+                    <li>💡 Intuimos que tienen una <b>conexión real</b> con lo que observamos.</li>
+                    <li>🔍 Nos ayudan a <b>agrupar fenómenos</b> que parecen relacionados.</li>
+                    <li>🧭 Sirven como <b>brújulas temporales</b> mientras exploramos.</li>
+                </ul>
+                <p><i>"No sabemos exactamente qué es, pero sentimos que es importante. Eso basta para empezar."</i></p>
+
+                <hr>
+
+                <p><b>🔄 Las definiciones también crecen (¡no son de piedra!)</b></p>
+                <p>Imaginá que las definiciones son como <b>zapatos</b>:</p>
+                <ul>
+                    <li>🌱 <b>Inicio:</b> Zapatillas elásticas: se adaptan mientras el pie crece.</li>
+                    <li>🌳 <b>Desarrollo:</b> Zapatos más firmes: ya tienen forma, pero se pueden ajustar.</li>
+                    <li>🌲 <b>Ciencia madura:</b> Botas de montaña: precisas, resistentes... ¡pero aún así se pueden cambiar si el terreno lo pide!</li>
+                </ul>
+                <p>✨ Incluso en la <b>física</b>, conceptos como <i>"energía"</i>, <i>"fuerza"</i> o <i>"tiempo"</i> han cambiado de significado a lo largo de los siglos. ¡La rigidez es enemiga del progreso!</p>
+
+                <hr>
+
+                <p><b>💥 Y entonces... ¿qué es una "pulsión"?</b></p>
+                <p>Freud presenta su <b>concepto estrella</b> para la psicología:</p>
+                <p>🗝️ <b>Pulsión</b> = Una fuerza o empujón que viene <i>de adentro</i> del organismo y nos mueve a actuar.</p>
+                <p>Pero aclara con honestidad científica:</p>
+                <p style="background:#d1e7dd; padding:12px; border-left:4px solid #198754; font-family:monospace; font-size:0.9em; margin:10px 0;">
+⚠️ "Esto todavía es una convención oscura"<br>
+✅ "Pero es el punto de partida necesario para empezar a entender"<br>
+🔧 "Ahora nos toca llenarla de contenido, poco a poco, desde distintos ángulos"
+                </p>
+                <p>🎈 <b>Ejemplo sencillo:</b> Imaginá que tenés hambre. No es solo "el estómago que suena". Es un <b>empujón interno</b> que te hace buscar comida, pensar en comida, sentir ansiedad si no comés... Eso, en versión psicológica profunda, es una <i>pulsión</i>.</p>
+
+                <hr>
+
+                <p><b>🧭 La gran idea en una frase:</b></p>
+                <p><i>"La ciencia no es un edificio terminado: es una casa que se construye mientras vivimos en ella. Las definiciones son como muebles: útiles, pero se pueden cambiar si encontramos mejores."</i></p>
+
+                <p><b>🎈 Resumen visual:</b></p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #0d6efd; font-family:monospace; font-size:0.9em;">
+🔬 Cómo se construye la ciencia (según Freud)<br><br>
+1️⃣ Observar fenómenos → "¿Qué veo?" 👀<br>
+2️⃣ Agrupar y ordenar → "¿Qué se parece a qué?" 🗂️<br>
+3️⃣ Usar conceptos "bebé" → "Pongámosle nombre provisional" 🏷️<br>
+4️⃣ Intuir conexiones → "Esto me suena que va junto" 💡<br>
+5️⃣ Explorar en profundidad → "Ahora sí, entendamos mejor" 🕵️<br>
+6️⃣ Refinar conceptos → "Ajustemos la definición" ✨<br>
+7️⃣ Seguir evolucionando → "¿Y si lo pensamos de otra forma?" 🔄<br><br>
+💥 La "pulsión" = Concepto bebé esencial para la psicología:<br>
+   👉 Aún nebuloso, pero necesario para empezar a caminar 🚶‍♂️
+                </p>
+
+                <p><b>✨ Lo más importante:</b><br>
+                <i>"No tengas miedo de empezar con ideas imperfectas. Lo importante no es tener la definición perfecta hoy, sino estar dispuesto a refinarla mañana. La ciencia es un verbo, no un sustantivo."</i>
+                </p>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item item-teorico">
+        <button class="accordion-header">
+            <span class="badge badge-teorico">MAT 2</span>
+            <span class="titulo">6. Introducción del narcisismo (1915)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. (1915). “Introducción del narcisismo”. En Obras completas, Tomo XIV.
+                    Buenos Aires. Amorrortu. 1990, p. 75.</h5><hr><br>
+
+                <p>Sigmund Freud establece una <b>distinción fundamental</b> entre la <b>teoría especulativa</b> y
+                la <b>ciencia basada en la interpretación de la empiria</b>, como es <b>el caso del
+                psicoanálisis.</b></p> 
+
+                <p>Mientras que <i>la especulación busca fundamentaciones lógicas
+                impecables y conceptos nítidos desde su origen</i>, <b>la ciencia empírica se sustenta
+                primordialmente en <i>la sola observación clínica.</i></b></p> 
+                
+                <p>Bajo esta perspectiva, los conceptos básicos no constituyen el cimiento inamovible sobre el cual se erige el
+                conocimiento, sino que funcionan como el remate o la coronación del edificio
+                científico; son pensamientos que pueden iniciarse de forma nebulosa y que el
+                investigador está dispuesto a sustituir o desechar si el desarrollo de la disciplina así
+                lo requiere, de manera análoga a como sucede en la física con sus intuiciones sobre
+                la materia y las fuerzas.</p>
+                <p>En este marco epistemológico, el autor defiende la validez de nociones como la
+                libido yoica —la energía pulsional dirigida al propio yo— y la libido de objeto —
+                aquella que se vuelca hacia elementos externos—, argumentando que su valor
+                reside en que surgen del procesamiento detallado de los procesos íntimos de la
+                neurosis y la psicosis. Esta división de la libido es una extensión necesaria de un
+                supuesto previo que separa las pulsiones sexuales de las pulsiones yoicas (fuerzas
+                instintivas de autoconservación), una distinción que se impuso al autor tras el
+                análisis de las neurosis de trasferencia, categoría que engloba cuadros clínicos
+                como la histeria y la neurosis obsesiva. Ante la carencia de una doctrina de las
+                pulsiones completa que sirva de guía, Freud sostiene que resulta obligatorio
+                adoptar supuestos provisionales y someterlos a prueba de manera consecuente,
+                validando la separación originaria de las pulsiones no solo por su coherencia lógica,
+                sino por su capacidad operativa para explicar fenómenos clínicos que otros
+                modelos han fracasado en abordar de manera radical.</p><hr>
+                <h5>Ahora, explicado de manera muy simple.</h5><hr><br>
+                                <p>Imaginá que Freud es como un <b>detective de la mente</b> 🕵️‍♂️🧠. Aquí te lo cuento con ejemplos sencillos:</p>
+
+                <p><b>🧩 Dos formas de armar un rompecabezas:</b></p>
+                <ul>
+                    <li><b>El que "adivina" (especulación):</b> Se imagina el dibujo sin mirar las piezas. Solo usa la lógica pura.</li>
+                    <li><b>El que "observa" (ciencia empírica):</b> Agarra cada pieza, prueba dónde encaja y <i>recién ahí</i> entiende qué dibujo está armando. Así trabajaba Freud: observando y escuchando en la consulta.</li>
+                </ul>
+
+                <p><b>🏗️ ¿Y las palabras difíciles como "libido"?</b></p>
+                <p>Freud no las inventó de la nada. Son como <b>etiquetas temporales</b> que puso a cosas que veía repetir una y otra vez:</p>
+                <ul>
+                    <li>💡 <b>Libido del yo:</b> La energía que usás para quererte, cuidarte y protegerte.</li>
+                    <li>💡 <b>Libido de objeto:</b> La energía que usás para conectar con otros (personas, hobbies, el mundo exterior).</li>
+                </ul>
+                <p>Si con el tiempo esas etiquetas no servían más... ¡las cambiaba! Como cuando te das cuenta de que una pieza no va ahí y la movés.</p>
+
+                <p><b>🔍 ¿Por qué separó los "instintos"?</b></p>
+                <p>Al escuchar a sus pacientes, notó que la energía interna parecía ir en dos direcciones:</p>
+                <ol>
+                    <li><b>Hacia adentro:</b> para sobrevivir y cuidarse (pulsiones yoicas).</li>
+                    <li><b>Hacia afuera:</b> para buscar placer, crear o enamorarse (pulsiones sexuales/libido).</li>
+                </ol>
+                <p>No lo dijo por capricho, sino porque <i>lo vio funcionar</i> en casos reales de ansiedad, miedos o pensamientos repetitivos.</p>
+
+                <p><b>🧭 La gran idea en una frase:</b></p>
+                <p><i>"Voy a proponer ideas, las voy a probar con lo que veo en la consulta, y si no funcionan... las cambio. Lo importante es que me ayuden a entender lo que le pasa a la gente."</i></p>
+
+                <hr>
+                <p><b>🎈 Resumen rápido:</b></p>
+                <table style="width:100%; border-collapse:collapse; margin-top:10px; font-size:0.95em;">
+                    <tr style="background:#f8f9fa;">
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Concepto difícil</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Explicación sencilla</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Teoría especulativa</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Adivinar sin mirar</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Ciencia empírica</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Observar como detective</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Conceptos básicos</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Etiquetas flexibles que se pueden cambiar</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Libido yoica / de objeto</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Energía para quererte vs. energía para querer a otros</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Pulsiones sexuales / yoicas</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Dos "motorcitos": uno para conectar, otro para cuidarse</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item item-teorico">
+        <button class="accordion-header">
+            <span class="badge badge-teorico">MAT 3</span>
+            <span class="titulo">7. Parálisis motrices orgánicas e histéricas (1893)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. (1893 [1888-93]). “Algunas consideraciones con miras a un estudio
+                comparativo de las parálisis motrices orgánicas e histéricas”. En Obras
+                completas, Tomo I. Buenos Aires. Amorrortu. 1988.</h5><hr><br>
+                <p>Sigmund Freud establece una distinción fundamental entre las parálisis motrices
+                orgánicas y las histéricas partiendo de una base neuroanatómica. En las afecciones
+                orgánicas, reconoce la «parálisis de proyección» (perifero-espinal), donde la lesión
+                afecta fibras individuales de manera detallada debido a que la periferia se proyecta
+                punto por punto en la médula, y la «parálisis de representación» (cerebral), que
+                ataca segmentos corporales completos o funciones complejas debido a que la
+                corteza cerebral representa grupos de elementos periféricos. Si bien la histeria
+                simula inicialmente a la parálisis cerebral al presentarse «en masse» (afectando
+                extremidades o aparatos motores completos), se desvía radicalmente de las leyes
+                anatómicas; por ejemplo, puede paralizar un hombro de forma aislada o un brazo
+                de forma absoluta sin afectar el rostro, ignorando la distribución real de los haces
+                nerviosos.</p>
+                <p>Esta divergencia permite a Freud afirmar que la histeria ignora la anatomía del
+                sistema nervioso y se rige, en cambio, por una «concepción vulgar» o popular del
+                cuerpo, fundamentada en percepciones visuales y táctiles cotidianas más que en
+                el conocimiento científico. Así, la «lesión» en la histeria no es de carácter tisular —
+                daño en el tejido físico—, ni siquiera una afección orgánica pasajera como el edema
+                o la anemia, sino una «lesión funcional o dinámica». Esto implica una alteración en
+                la «accesibilidad asociativa»: la representación mental del órgano (la idea del brazo,
+                por ejemplo) queda aislada y no puede entrar en conexión con las otras ideas que
+                constituyen el yo consciente.</p>
+                <p>Desde un enfoque psicológico, este aislamiento se produce porque la idea del
+                órgano está «saturada» o fijada en una asociación dentro del subconsciente —
+                aquella instancia psíquica cuyos contenidos no están presentes en la conciencia
+                inmediata— con el recuerdo de un suceso traumático. Este recuerdo posee un
+                elevado «valor afectivo» o «monto de afecto» (la carga emocional ligada a una
+                impresión), el cual monopoliza la representación del órgano e impide que este
+                responda a las impulsiones del sujeto.</p>
+                <p>La resolución del síntoma solo es posible
+                mediante la «abreacción», proceso por el cual el excedente de estímulo afectivo es
+                eliminado a través de una reacción motriz adecuada o un trabajo psíquico consciente, 
+                lo que libera la representación del órgano y restablece su capacidad de asociarse con el yo.</p>
+
+                <hr>
+                <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+                    
+                <p>Imaginá que Freud es como un <b>detective de cuerpos y mentes</b> 🕵️‍♂️🧠. Acá te explico la diferencia entre una parálisis "de verdad" y una "del alma" con un cuento:</p>
+
+                <p><b>🧩 Dos tipos de "brazo que no se mueve"</b></p>
+                <p>Imaginá que tu cuerpo es como un <b>celular con aplicaciones</b> 📱:</p>
+                <table style="width:100%; border-collapse:collapse; margin:10px 0; font-size:0.95em;">
+                    <tr style="background:#f8f9fa;">
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Tipo de parálisis</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">¿Qué pasa?</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">¿Quién lo arregla?</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">🔧 <b>Orgánica</b></td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Se rompió el cable o la pantalla (daño físico real)</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Médico con herramientas, rayos X, cirugía</td>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">💭 <b>Histérica</b></td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">La "app del brazo" se bloqueó por un virus emocional</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">Terapeuta que ayuda a "reiniciar" la mente</td>
+                    </tr>
+                </table>
+                <p>🗝️ <b>La gran diferencia:</b> La parálisis orgánica sigue las reglas de la anatomía (los cables del cuerpo). La histérica... ¡sigue las reglas de cómo <i>sentimos</i> el cuerpo!</p>
+
+                <hr>
+
+                <p><b>🗺️ El cuerpo que "dibuja" la mente</b></p>
+                <p>Freud notó algo curioso: las parálisis histéricas <b>no respetan los nervios reales</b>, sino que siguen el "mapa popular" del cuerpo:</p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #ffc107; font-family:monospace; font-size:0.9em; margin:10px 0;">
+                    🧠 Cómo la gente común "ve" su cuerpo:<br>
+                    • "Mi brazo" = una pieza completa 🦾<br>
+                    • "Mi pierna" = otra pieza 🦵<br>
+                    • "Mi hombro" = un botón que se puede apagar 🔘<br><br>
+                    ⚡ Cómo funciona el sistema nervioso real:<br>
+                    • Miles de cables entrelazados 🔌<br>
+                    • Zonas que se superponen 🎯<br>
+                    • Nada se apaga "por separado" sin afectar lo demás
+                </p>
+                <p>✨ <b>Ejemplo:</b> Una parálisis orgánica nunca dejaría sin mover <i>solo</i> el hombro sin tocar el brazo o el cuello... ¡pero la histeria sí puede! Porque no está dañando cables: está "pausando" una idea.</p>
+
+                <hr>
+
+                <p><b>🔒 El "bloqueo" no está en el músculo... ¡está en la mente!</b></p>
+                <p>Imaginá que la representación de tu brazo en tu mente es como un <b>personaje de videojuego</b> 🎮:</p>
+                <ul>
+                    <li>🎮 <b>Estado normal:</b> Personaje conectado al joystick → se mueve cuando querés.</li>
+                    <li>🔌 <b>Estado histérico:</b> Personaje "desconectado" → por más que apretés botones, no responde.</li>
+                </ul>
+                <p>🗝️ <b>Lesión funcional</b> = No es que el brazo esté roto. Es que <i>la idea del brazo</i> quedó atrapada en el subconsciente, pegada a un recuerdo doloroso.</p>
+
+                <hr>
+
+                <p><b>💣 El "pegamento emocional": el monto de afecto</b></p>
+                <p>¿Por qué la idea del brazo queda atrapada? Freud dice que por un <b>recuerdo con mucha carga emocional</b>:</p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #ffc107; font-family:monospace; font-size:0.9em; margin:10px 0;">
+                    🎬 Escena traumática (ejemplo):<br>
+                    • Alguien te lastimó el brazo + sentiste miedo/vergüenza/enojo<br>
+                    • Tu mente, para protegerse, "guardó" esa escena en el sótano 🗄️<br>
+                    • Pero la emoción (el "pegamento") quedó pegada a la IDEA del brazo<br><br>
+                    🔗 Resultado:<br>
+                    • Cada vez que querés mover el brazo...<br>
+                    • ...la emoción escondida dice: "¡ALTO! Esto duele" 🚫<br>
+                    • Y el cuerpo obedece: se paraliza
+                                    </p>
+                <p>✨ No es que "invente" el síntoma. Es que <b>la emoción no procesada toma el control</b> del cuerpo.</p>
+
+                <hr>
+
+                <p><b>🗝️ ¿Y cómo se desbloquea? ¡Con la "abreacción"!</b></p>
+                <p>Imaginá que tenés una <b>olla a presión</b> 🍲 con vapor adentro:</p>
+                <table style="width:100%; border-collapse:collapse; margin:10px 0; font-size:0.95em;">
+                    <tr style="background:#f8f9fa;">
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Si no hacés nada...</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Si abrís la válvula...</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">💥 La presión sube, la olla tiembla, puede explotar</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">🌬️ El vapor sale suave, la olla se calma</td>
+                    </tr>
+                </table>
+                <p>🗣️ <b>Abreacción</b> = "Abrir la válvula con palabras": contar el recuerdo, llorar lo no llorado, nombrar la emoción. Cuando el "pegamento emocional" se libera... ¡la idea del brazo vuelve a conectarse con el yo!</p>
+
+                <hr>
+
+                <p><b>🧭 La gran idea en una frase:</b></p>
+                <p><i>"El cuerpo no se paraliza por capricho: a veces es la única forma que tiene el alma de decir 'esto me dolió y no pude procesarlo'. Escuchar ese mensaje es el primer paso para volver a moverse."</i></p>
+
+                <p><b>🎈 Resumen visual:</b></p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #0d6efd; font-family:monospace; font-size:0.9em;">
+🔍 Parálisis orgánica vs. histérica<br><br>
+🔧 ORGÁNICA (daño físico):<br>
+   👉 Sigue las reglas de la anatomía 🧬<br>
+   👉 Afecta fibras, nervios, zonas reales<br>
+   👉 Se ve en radiografías, resonancias<br>
+   👉 Cura: medicina, fisioterapia, cirugía<br><br>
+💭 HISTÉRICA (bloqueo mental):<br>
+   👉 Sigue el "mapa popular" del cuerpo 🗺️<br>
+   👉 Afecta "piezas completas" como las sentimos<br>
+   👉 No se ve en estudios: es funcional<br>
+   👉 Cura: hablar, recordar, liberar la emoción (abreacción)<br><br>
+💥 El mecanismo clave:<br>
+   1️⃣ Recuerdo traumático + emoción fuerte = "pegamento" 🧲<br>
+   2️⃣ La idea del órgano queda "secuestrada" en el subconsciente 🔒<br>
+   3️⃣ El cuerpo obedece: no se mueve 🚫<br>
+   4️⃣ Abreacción = liberar la emoción con palabra + recuerdo 🗣️✨<br>
+   5️⃣ La idea se reconecta → el cuerpo vuelve a responder 🎮✅
+                </p>
+
+                <p><b>✨ Lo más importante:</b><br>
+                <i>"No hay síntomas 'falsos': hay mensajes del alma que el cuerpo traduce como puede. Cuando la emoción encuentra palabras, el cuerpo ya no necesita paralizarse para ser escuchado."</i>
+            </p>
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item item-teorico">
+        <button class="accordion-header">
+            <span class="badge badge-teorico">MAT 4</span>
+            <span class="titulo">8. Sobre el mecanismo psíquico de fenómenos histéricos (1893)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. (1893). “Sobre el mecanismo psíquico de fenómenos histéricos”. En
+                Obras completas, Tomo III. Buenos Aires. Amorrortu. 1989.</h5><hr><br>
+                <p>Sigmund Freud postula que la <b style="color:#0d6efd;">patogénesis de los síntomas histéricos</b>, tanto en la histeria traumática como en la común o no traumática, posee una <b>raíz estrictamente psíquica</b> donde cada síntoma se encuentra en una relación de <i style="color:#198754; font-weight:600;">determinación unívoca</i> con el suceso que lo originó. Esto significa que existe un <b>vínculo causal y específico</b> entre la naturaleza de la vivencia original —o su <i>representación simbólica</i>— y la forma particular que adquiere la dolencia física. Bajo esta lógica, el <span style="background:#fff3cd; padding:2px 4px; border-radius:3px; font-weight:600;">síntoma no es arbitrario</span>, sino que puede interpretarse como una <b>expresión del estado psíquico</b> del paciente, a menudo mediada por un simbolismo donde el lenguaje cotidiano sirve de puente para convertir una <i>afección moral</i> en una neuralgia o parálisis corporal.</p>
+
+<p>El mecanismo que explica la formación de estos síntomas se basa en el manejo de la <b style="color:#0d6efd;">«suma de excitación»</b>, entendida como un incremento de energía en el sistema nervioso tras recibir una impresión psíquica. En condiciones normales, el organismo busca disminuir esta carga mediante la <span style="background:#d1e7dd; padding:2px 6px; border-radius:3px; font-weight:600; color:#146c43;">«abreacción»</span>, una descarga motriz o verbal (como el llanto, el insulto o la acción directa) que permite aliviar la tensión acumulada. Si esta reacción es interceptada o impedida, el afecto queda <i style="color:#dc3545; font-weight:600;">«estrangulado»</i> y el recuerdo de la vivencia se convierte en un <b>trauma psíquico</b> que no sucumbe al desgaste natural del tiempo ni al olvido. Mientras que una persona sana realiza un <b>«procesamiento asociativo»</b> —un trabajo mental que desgasta el afecto mediante reflexiones y representaciones contrastantes—, en el histérico el recuerdo permanece <span style="background:#f8f9fa; padding:2px 4px; border-left:3px solid #ffc107; font-style:italic;">vivo y aislado de la conciencia normal</span>.</p>
+
+<p>Freud sostiene que esta persistencia del trauma se debe a que la vivencia ocurre o se refugia en <b style="color:#6f42c1;">«estados hipnoides»</b>, momentos de disociación o de <i>«doble conciencia»</i> que están fuera del comercio asociativo del yo vigil. Estas representaciones patógenas operan de manera continua como <span style="background:#e2e3e5; padding:2px 5px; border-radius:3px; font-weight:600;">«cuerpos extraños»</span> que sostienen la enfermedad. Por ello, el método terapéutico propuesto consiste en llevar al paciente, mediante la hipnosis, a vivenciar por segunda vez el trauma para que pueda completar la reacción omitida. Al expresar en palabras el afecto reprimido y reintegrar el recuerdo a la conciencia, se cumple el principio <i style="color:#0d6efd; font-weight:600; font-family:georgia,serif;">«cessante causa cessat effectus»</i>: al cesar la causa (el afecto atrapado en el subconsciente), cesa automáticamente el efecto (el síntoma permanente).</p>
+                
+                <hr>
+                <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+
+                                <p>Imaginá que Freud es como un <b>traductor del cuerpo</b> 🗣️💙. Acá te explico este mecanismo como si fuera un cuento con piezas que encajan:</p>
+
+                <p><b>🎭 El cuerpo habla lo que la boca calla</b></p>
+                <p>Tus emociones son como un <b>idioma secreto</b>. Cuando no podés expresarlas con palabras... ¡tu cuerpo las traduce a "síntomas"!</p>
+                <p>🗝️ <b>Determinismo unívoco</b> = Cada dolor tiene una historia específica. No es al azar. Es como un mensaje codificado: <i>"No pude tragar esa injusticia"</i> → dolor de garganta. <i>"Me siento cargado"</i> → dolor de espalda. El cuerpo usa metáforas literales.</p>
+
+                <hr>
+
+                <p><b>🎈 La energía que se acumula (y no sale)</b></p>
+                <p>Cada emoción fuerte suma <b>"carga"</b> a tu sistema nervioso (<i>suma de excitación</i>). Lo natural es sacarla:</p>
+                <ul>
+                    <li>😭 Llorando</li>
+                    <li>🗣️ Hablando</li>
+                    <li>🏃 Moviendo el cuerpo</li>
+                    <li>💪 Actuando</li>
+                </ul>
+                <p>Esto se llama <b>abreacción</b>. Es como soltar el aire de un globo 🎈. Pero si te dicen <i>"aguantá"</i> o <i>"ya pasó"</i>, la válvula se cierra. La energía queda atrapada, el recuerdo se vuelve <b>trauma</b>, y en vez de desvanecerse... ¡se conserva intacto!</p>
+
+                <hr>
+
+                <p><b>🗄️ El "cajón cerrado" de la mente</b></p>
+                <table style="width:100%; border-collapse:collapse; margin:10px 0; font-size:0.95em;">
+                    <tr style="background:#f8f9fa;">
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Mente sana</th>
+                        <th style="padding:10px; text-align:left; border-bottom:2px solid #dee2e6;">Mente histérica</th>
+                    </tr>
+                    <tr>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">🔄 <b>Procesamiento asociativo:</b> Piensa, reflexiona, mezcla recuerdos, los archiva y les pierde fuerza con el tiempo.</td>
+                        <td style="padding:8px; border-bottom:1px solid #eee;">🔒 <b>Estados hipnoides:</b> El recuerdo queda guardado en un "cajón aparte", fuera de la conciencia normal. Ahí sigue fresco, como recién pasado.</td>
+                    </tr>
+                </table>
+                <p>✨ En ese cajón, la representación patógena actúa como un <b>cuerpo extraño</b> 🪡: no se integra, solo irrita. Y mientras siga ahí, el síntoma sigue vivo.</p>
+
+                <hr>
+
+                <p><b>🗝️ La cura: volver, hablar y soltar</b></p>
+                <p>Freud propone un camino claro:</p>
+                <ol>
+                    <li>🛋️ Llevar al paciente a un estado de calma para abrir el cajón sin miedo.</li>
+                    <li>🎬 Revivir la escena original y <b>completar la reacción que quedó truncada</b>.</li>
+                    <li>🗣️ Ponerle palabras al afecto reprimido y traerlo a la conciencia.</li>
+                    <li>🕊️ Al liberar la carga emocional, el "cuerpo extraño" deja de irritar.</li>
+                </ol>
+                <p>📜 <b>Cessante causa, cessat effectus</b> = <i>"Al cesar la causa, cesa el efecto"</i>. Sacás la astilla mental... ¡el dolor físico desaparece solo!</p>
+
+                <hr>
+
+                <p><b>🎈 Resumen visual:</b></p>
+                <p style="background:#f8f9fa; padding:12px; border-left:4px solid #0d6efd; font-family:monospace; font-size:0.9em;">
+                    🔍 El mecanismo psíquico de la histeria<br><br>
+                    1️⃣ Emoción intensa → "Suma de excitación" ⚡<br>
+                    2️⃣ Si no se descarga (abreacción) → Queda atrapada 🚫<br>
+                    3️⃣ El recuerdo se guarda en un "cajón aparte" (estado hipnoide) 🗄️<br>
+                    4️⃣ Ahí actúa como "cuerpo extraño" 🪡 → Irrita constantemente<br>
+                    5️⃣ El cuerpo traduce la irritación en síntoma físico 🩹<br>
+                    6️⃣ Terapia: abrir el cajón + hablar + llorar/soltar 🗣️✨<br>
+                    7️⃣ Resultado: Cessante causa → Cessat effectus 🕊️✅
+                </p>
+
+                <p><b>✨ Lo más importante:</b><br>
+                <i>"Los síntomas no son errores del cuerpo: son mensajes que quedaron atrapados en el tiempo. Cuando la emoción encuentra palabras y salida, el síntoma ya no tiene razón de existir."</i></p>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.querySelectorAll('.accordion-header').forEach(button => {
+        button.addEventListener('click', () => {
+            const accordionItem = button.parentElement;
+            const isOpen = accordionItem.classList.contains('active');
+
+            // Cerrar otros al abrir uno nuevo
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                item.classList.remove('active');
+                item.querySelector('.accordion-content').style.maxHeight = null;
+            });
+
+            if (!isOpen) {
+                accordionItem.classList.add('active');
+                const content = accordionItem.querySelector('.accordion-content');
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
