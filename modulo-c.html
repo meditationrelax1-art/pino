@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psicoanálisis - Módulo C</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --bg: #f4f7f6;
+            --white: #ffffff;
+            /* Colores de Instancias */
+            --color-practico: #3498db;
+            --bg-practico: #dcf0fa;
+            --color-seminario: #e67e22;
+            --bg-seminario: #fbe6d6;
+            --color-teorico: #27ae60;
+            --bg-teorico: #e2f3e5;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg);
+            color: #333;
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .module-nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+
+        .module-nav button {
+            padding: 6px 10px;
+            border: none;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.8rem;
+        }
+
+        .module-nav button.active { background: white; color: var(--primary); }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        /* Cuadros de Contenido del Programa */
+        .info-box {
+            border: 1px solid #333;
+            padding: 15px;
+            margin: 25px 0 15px 0;
+            font-size: 0.85rem;
+            text-align: justify;
+            border-radius: 4px;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .info-practico { background-color: var(--bg-practico); }
+        .info-seminario { background-color: var(--bg-seminario); }
+        .info-teorico { background-color: var(--bg-teorico); }
+
+        .info-box strong { font-weight: 700; }
+
+        /* Títulos de Sección */
+        .section-divider {
+            margin-top: 30px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--primary);
+            color: var(--primary);
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+        }
+
+        /* Estilos del Acordeón */
+        .accordion-item {
+            background: var(--white);
+            margin-bottom: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border-left: 5px solid #ccc;
+            /*position: relative;*/
+        }
+
+        .item-practico { border-left-color: var(--color-practico); }
+        .item-seminario { border-left-color: var(--color-seminario); }
+        .item-teorico { border-left-color: var(--color-teorico); }
+
+        .accordion-header {
+            width: 100%;
+            padding: 15px 40px 15px 15px;
+            background: var(--white);
+            border: none;
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .badge {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-weight: 800;
+            color: white;
+            width: fit-content;
+            margin-bottom: 5px;
+        }
+        .badge-practico { background: var(--color-practico); }
+        .badge-seminario { background: var(--color-seminario); }
+        .badge-teorico { background: var(--color-teorico); }
+
+        .accordion-header .titulo {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .accordion-header::after {
+            content: '›';
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.5rem;
+            color: #bbb;
+            transition: 0.3s;
+        }
+        .active .accordion-header::after { transform: translateY(-50%) rotate(90deg); }
+
+        /* Contenido Desplegable */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: #fafafa;
+        }
+
+        .content-inner {
+            padding: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        /* CONFIGURACIÓN DEFINITIVA DE PÁRRAFOS */
+        .content-inner p {
+            display: block !important;
+            width: 100% !important;
+            text-align: justify !important;
+            text-justify: inter-word !important;
+            margin-bottom: 1.2rem !important;
+            hyphens: none !important;
+            white-space: normal !important;
+        }
+
+        .content-inner p:last-child {
+            margin-bottom: 0 !important;
+        }
+
+        .content-inner ul {
+            margin: 10px 0 15px 20px;
+        }
+
+        .content-inner li {
+            margin-bottom: 8px;
+            text-align: justify;
+        }
+
+        /* Colores para los Títulos de Sección */
+        .section-practico { color: var(--color-practico) !important; border-bottom-color: var(--color-practico) !important; }
+        .section-seminario { color: var(--color-seminario) !important; border-bottom-color: var(--color-seminario) !important; }
+        .section-teorico { color: var(--color-teorico) !important; border-bottom-color: var(--color-teorico) !important; }
+
+        /* Colores para los Títulos de los Textos */
+        .item-practico .titulo { color: var(--color-practico) !important; }
+        .item-seminario .titulo { color: var(--color-seminario) !important; }
+        .item-teorico .titulo { color: var(--color-teorico) !important; }
+
+        .module-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+        margin-top: 10px;
+        justify-content: center;
+        }
+
+        /* Estilo para los nuevos botones (enlaces) */
+        .nav-btn {
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-decoration: none; /* Quita el subrayado del link */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.3s;
+        }
+
+        .nav-btn.active { 
+            background: white; 
+            color: var(--primary); 
+        }
+
+        .nav-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
+        @media (max-width: 600px) {
+            header h1 { font-size: 1.2rem; }
+            header h3 { font-size: 0.9rem; }
+            .info-box { font-size: 0.8rem; }
+            .accordion-header .titulo { font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Psicoanálisis Freud (49)</h1>
+    <h3>Cátedra: Pino. Módulos.</h3>
+    <div class="module-nav">
+    <!-- Botón de Inicio con Icono de Casa -->
+    <a href="index.html" class="nav-btn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+    </a>
+    
+    <a href="#" class="nav-btn">0</a>
+    <a href="modulo-a.html" class="nav-btn">A</a>
+    <a href="modulo-b.html" class="nav-btn">B</a>
+    <a href="modulo-c.html" class="nav-btn active">C</a>
+    <a href="#" class="nav-btn">D</a>
+    <a href="#" class="nav-btn">E</a>
+    <a href="#" class="nav-btn">F</a>
+    <a href="#" class="nav-btn">G</a>
+    <a href="#" class="nav-btn">H</a>
+</div>
+</header>
+
+<div class="container">
+
+    <!-- SECCIÓN PRÁCTICOS -->
+    <h2 class="section-divider section-practico">Prácticos</h2>
+    
+    <div class="info-box info-practico">
+        <strong>Módulo C, Prácticos: Síntoma - Fantasía inconsciente</strong> (Clases 6 y 10). 
+        <strong>Contenidos:</strong> Pasaje del trauma a
+            la fantasía. En el origen: un germen de moción sexual. Sueño: vía regia de acceso al inconsciente.
+            Contenido manifiesto, contenido latente. Inconsciente dinámico. La censura onírica. Relación entre el
+            sueño y la fantasía. Los sueños como formación psíquica de pleno derecho. El sueño como síntoma de las
+            personas normales. Trabajo del sueño, trabajo de interpretación. Particularidad del término interpretación
+            {Deutung} utilizado por Freud, el sueño como invención. Mecanismo de formación de sueños como
+            paradigma de la formación de síntomas neuróticos. Olvido de nombres propios: olvido y formación
+            sustitutiva. Sexualidad y muerte como límites. Recuerdos encubridores: figuración de la fantasía de deseo.
+            El recuerdo como formación de compromiso. El recuerdo “sobre” la infancia y fantasía. Recuerdos de
+            infancia como recuerdo encubridor. Lo hipernítido como índice del límite a lo representable. Fantasía y
+            síntoma. El lugar de la fantasía, su estatuto: soldadura, sueños diurnos, sentido sexual del síntoma.
+            Síntoma, fantasía, transferencia. Síntoma como neoformación.
+    </div>
+
+     <!-- MCP1 -->
+    <div class="accordion-item item-practico">
+        <button class="accordion-header">
+            <span class="badge badge-practico">MCP 1</span>
+            <span class="titulo">1. Carta 69 y 101 (1897).</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S., (1897) “Carta 69 (21 de septiembre de 1897); Carta 101 (1899)”. Obras completas, Tomo I, Buenos Aires, Amorrortu, 1988.</h5><hr><br>
+                <p><b style="color:#0d6efd;">Carta 69.</b><br> En la "Carta 69", enviada a Wilhelm Fliess el 21 de septiembre de 1897, Sigmund Freud revela el colapso de su <span style="background:#f8d7da; padding:2px 5px; border-radius:3px; font-weight:600; color:#842029;">"teoría de la seducción"</span>, un hito fundacional que marca el paso de la búsqueda del <i>trauma externo</i> a la exploración de la <b style="color:#6f42c1;">realidad psíquica</b>. Freud confiesa que <span style="color:#dc3545; font-weight:600;">"ya no cree más en su neurótica"</span>, la hipótesis que sostenía que la histeria era causada invariablemente por el abuso sexual real perpetrado por los padres durante la infancia. El motivo teórico más trascendental para este descreimiento es el hallazgo de que en lo inconsciente no existe un <b style="color:#6f42c1;">"signo de realidad"</b>, lo que significa que el aparato psíquico no posee un mecanismo interno para distinguir entre una experiencia históricamente verídica y una <span style="background:#fff3cd; padding:2px 4px; border-radius:3px; font-weight:600;">"ficción investida con afecto"</span>, es decir, una fantasía cargada de una gran intensidad emocional.</p>
+
+                <p>Ante este descubrimiento, Freud comprende que las escenas de seducción relatadas por sus pacientes pueden ser, en realidad, <i>fantasías sexuales</i> que se apoderan del tema de los padres. A este hallazgo se suman razones de orden práctico y estadístico: la baja tasa de éxitos terapéuticos plenos, la deserción de pacientes y la creciente improbabilidad de que la perversión contra los niños estuviera tan masivamente difundida en todas las familias. Freud observa que incluso en las psicosis más profundas o en los delirios más confusos, el presunto secreto de las vivencias infantiles no aflora de manera nítida, lo que sugiere que lo inconsciente no supera la resistencia con la facilidad esperada. Esta renuncia sitúa a Freud en un estado de <span style="border-left:3px solid #ffc107; padding-left:4px; font-style:italic;">incertidumbre teórica</span>, obligándolo a reconsiderar el peso de la predisposición hereditaria y a reformular su comprensión sobre el juego de fuerzas de la represión. Pese al desconcierto, el autor no lo vive como una derrota, sino como el resultado de un trabajo intelectual honesto y un <span style="background:#d1e7dd; padding:2px 5px; border-radius:3px; font-weight:600; color:#146c43;">progreso necesario</span> hacia un conocimiento ulterior.</p>
+
+                <p><b style="color:#0d6efd;">Carta 101.</b> <br>En la "Carta 101", escrita los días 3 y 4 de enero de 1899, Freud comunica a Fliess una serie de descubrimientos fundamentales realizados a través de su autoanálisis. Llega a la conclusión de que las fantasías no son recuerdos directos de la infancia, sino <span style="background:#cff4fc; padding:2px 5px; border-radius:3px; font-weight:600; color:#055160;">"productos de épocas posteriores"</span> que el sujeto proyecta hacia atrás desde su presente. Este proceso se realiza a través de <b style="color:#6f42c1;">"conexiones-palabra"</b>, es decir, asociaciones lingüísticas que sirven de vehículo para estas construcciones imaginarias. Al preguntarse qué ocurrió realmente, Freud sostiene que, en lugar de sucesos traumáticos complejos, lo que existe es meramente un <span style="background:#fff3cd; padding:2px 4px; border-radius:3px; font-weight:600;">"germen de moción sexual"</span>, un impulso inicial luego elaborado y revestido por las fantasías.</p>
+
+                <p>Asimismo, Freud anuncia el hallazgo de un nuevo elemento psíquico de validez universal: un <span style="background:#d1e7dd; padding:2px 5px; border-radius:3px; font-weight:600; color:#146c43;">"grado previo del síntoma"</span> que antecede incluso a la formación de la fantasía. Este descubrimiento es crucial, ya que le permite vislumbrar que el esquema del <b style="color:#0d6efd;">funcionamiento del sueño</b> es susceptible de una aplicación universal, constituyendo la <span style="border-left:3px solid #0d6efd; padding-left:4px; font-style:italic;">clave definitiva para entender la histeria</span>. Esta revelación explica por qué no había podido concluir su libro: ahora comprende que debe exponer el proceso onírico para explicar simultáneamente el <i>proceso de formación del síntoma histérico</i>, unificando así los procesos anímicos normales con los patológicos bajo una <b style="color:#6f42c1;">misma ley psíquica</b>.</p>
+                <hr>
+            <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+                            
+            </div>
+        </div>
+    </div>
+
+    <!-- MCP2 -->
+    <div class="accordion-item item-practico">
+        <button class="accordion-header">
+            <span class="badge badge-practico">MCP 2</span>
+            <span class="titulo">2. Contenido manifiesto del sueño y pensamientos oníricos (1916-17)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S., (1916-17 [1915-17]) “Conferencias de introducción al psicoanálisis, 7ª conferencia. Contenido manifiesto del sueño y
+                pensamientos oníricos latentes”. Obras completas, Tomo XV, Buenos Aires, Amorrortu, 1989</h5><hr><br>
+                <p>En su séptima conferencia, Sigmund Freud establece la distinción técnica y teórica fundamental entre el <b style="color:#0d6efd;">contenido manifiesto</b> —el relato del sueño tal como es recordado y narrado por el sujeto— y los <b style="color:#6f42c1;">pensamientos oníricos latentes</b>, que constituyen el material genuino, oculto e inconsciente que la interpretación busca revelar. Bajo esta premisa, el sueño no es un fenómeno genuino en sí mismo, sino un <span style="background:#fff3cd; padding:2px 4px; border-radius:3px; font-weight:600;">sustituto desfigurado</span> de algo desconocido para la conciencia del soñante; un saber que está presente en el individuo pero que le resulta <i style="color:#dc3545;">inaccesible momentáneamente</i>.</p>
+
+                <p>Para acceder a este contenido latente, Freud propone la técnica de la <span style="background:#d1e7dd; padding:2px 5px; border-radius:3px; font-weight:600; color:#146c43;">asociación libre</span>, que consiste en desglosar el sueño en elementos singulares y evocar representaciones sustitutivas para cada uno de ellos. Este proceso requiere que el sujeto se someta a la <b>regla técnica fundamental</b> de comunicar toda ocurrencia sin ejercer ninguna selección ni crítica intelectual. Sin embargo, el trabajo de interpretación se enfrenta invariablemente a la <span style="background:#f8d7da; padding:2px 5px; border-radius:3px; font-weight:600; color:#842029;">resistencia</span>, una fuerza dinámica que se opone al afloramiento de lo reprimido. La resistencia se manifiesta mediante <i>objeciones críticas</i> en las que el soñante desestima ciertas asociaciones por considerarlas triviales, disparatadas, irrelevantes o demasiado penosas para ser comunicadas. Freud advierte que, precisamente, aquellas ocurrencias que el sujeto intenta sofocar suelen ser <span style="border-left:3px solid #ffc107; padding-left:4px; font-weight:600;">las más importantes y decisivas</span> para descubrir lo inconsciente.</p>
+
+                <p>La relación entre el contenido manifiesto y el latente está mediada por la <b style="color:#dc3545;">desfiguración onírica</b>, un proceso complejo que altera el sentido y la importancia de los pensamientos originales. Esta desfiguración se vale de diversos mecanismos, como la <span style="border-left:3px solid #0d6efd; padding-left:4px; font-style:italic;">sustitución por un fragmento o una alusión</span>, donde un detalle ínfimo en el sueño manifiesto subroga un complejo de pensamientos latentes mucho más vasto. Otro mecanismo esencial es la <span style="border-left:3px solid #6f42c1; padding-left:4px; font-style:italic;">figuración plástica o concreta</span>, en la cual los pensamientos abstractos se transforman en imágenes visuales concretas, basándose frecuentemente en la literalidad de las palabras de modo similar a un acertijo en imágenes o <b>jeroglífico</b>. Finalmente, el <span style="border-left:3px solid #fd7e14; padding-left:4px; font-style:italic;">desplazamiento del acento</span> provoca que el núcleo central de los pensamientos latentes aparezca en el contenido manifiesto como un detalle accesorio o incluso esté totalmente ausente, lo que explica la aparente absurdidad o indiferencia de muchos sueños.</p>
+
+                <p>A través del análisis de ejemplos clínicos, Freud demuestra que <b>ningún elemento del sueño es contingente</b> y que el éxito de la interpretación depende de <span style="background:#d1e7dd; padding:2px 5px; border-radius:3px; font-weight:600; color:#146c43;">vencer la resistencia</span> para reconstruir la totalidad de los pensamientos que el <i style="color:#6f42c1;">trabajo del sueño</i> se ha encargado de ocultar.</p>
+                <hr>
+
+            <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MCP3 -->
+     <div class="accordion-item item-practico">
+        <button class="accordion-header">
+            <span class="badge badge-practico">MCP 3</span>
+            <span class="titulo">3. La censura onírica (1916 - 17).</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S., (1916-17 [1915-17]) Conferencias de introducción al psicoanálisis, 9ª conferencia. La censura onírica”. Obras completas, Tomo XV, Buenos Aires, Amorrortu, 1989</h5><hr><br>
+                <p>En su novena conferencia, Sigmund Freud desarrolla la noción dinámica de la <b style="color:#0d6efd;">censura onírica</b>, la instancia psíquica responsable de la desfiguración del sueño. Partiendo de la premisa de que todo sueño es el <span style="background:#fff3cd; padding:2px 4px; border-radius:3px; font-weight:600;">cumplimiento alucinado de un deseo</span>, el autor explica que, en el adulto, estos deseos suelen ser de naturaleza <i style="color:#dc3545; font-weight:500;">egoísta, sexual o agresiva</i>, resultando inaceptables para la moral y la estética del "yo" consciente. Para proteger el dormir y evitar que estas mociones chocantes perturben al sujeto, interviene la <span style="background:#d1e7dd; padding:2px 5px; border-radius:3px; font-weight:600; color:#146c43;">censura</span>, una fuerza defensiva que deforma el contenido original y oculto para que este pueda acceder a la conciencia de manera <i>irreconocible</i>.</p>
+
+<p>El trabajo de la censura onírica se manifiesta a través de tres mecanismos principales de desfiguración. El primero es la <span style="border-left:3px solid #0d6efd; padding-left:4px; font-weight:600;">omisión</span>, que genera lagunas o silencios en el relato del sueño (similar a la censura de prensa que tacha fragmentos de un texto); el segundo es la <span style="border-left:3px solid #6f42c1; padding-left:4px; font-weight:600;">modificación</span>, que sustituye lo genuino por atenuaciones, alusiones o aproximaciones vagas; y el tercero es el <span style="border-left:3px solid #fd7e14; padding-left:4px; font-weight:600;">reagrupamiento o desplazamiento del acento</span>, mediante el cual el centro de interés de los pensamientos latentes es trasladado a un detalle accesorio, haciendo que el sueño manifiesto parezca ajeno o incomprensible para el propio soñante. Esta censura no cesa una vez formado el sueño, sino que persiste durante el proceso de análisis bajo la forma de <span style="background:#f8d7da; padding:2px 5px; border-radius:3px; font-weight:600; color:#842029;">resistencia</span>, la fuerza que se opone a la interpretación y que se manifiesta en las <i>objeciones críticas</i> del sujeto ante sus propias ocurrencias.</p>
+
+<p>Freud subraya que las tendencias contra las cuales se dirige la censura provienen de un <span style="background:#f8d7da; padding:2px 5px; border-radius:3px; font-weight:600; color:#842029;">"infierno" psíquico</span> poblado por un egoísmo sin límites, deseos incestuosos y odios profundos hacia seres queridos. No obstante, advierte que esta maldad aparente no reside en la esencia del sueño, sino en la <i>naturaleza humana misma</i>, que alberga mociones que la educación y la cultura han obligado a reprimir. El sueño cumple así la función inofensiva de preservar el dormir mediante la <span style="background:#cff4fc; padding:2px 5px; border-radius:3px; font-weight:600; color:#055160;">satisfacción alucinada</span> de estos deseos proscritos.</p>
+
+<p>Finalmente, el autor introduce un sentido más profundo de lo <b style="color:#6f42c1;">inconsciente</b>, definiéndolo no solo como algo latente o inaccesible por el momento, sino como procesos y tendencias de los que el individuo <span style="border-left:3px solid #6f42c1; padding-left:4px; font-style:italic;">permanentemente no sabe nada</span>, consolidando así la idea de un <span style="background:#e9ecef; padding:2px 5px; border-radius:3px; font-weight:600;">conflicto psíquico estructural</span> entre las tendencias admitidas del yo y las mociones de deseo reprimidas que solo encuentran una vía de expresión desfigurada a través de la vida onírica.</p>
+                <hr>
+            <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+                            
+            </div>
+        </div>
+    </div>
+
+        <!-- MCP4 -->
+    <div class="accordion-item item-practico">
+        <button class="accordion-header">
+            <span class="badge badge-practico">MCP 4</span>
+            <span class="titulo">4. Contenido manifiesto del sueño y pensamientos oníricos (1916-17)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S., (1916-17 [1915-17]) “Conferencias de introducción al psicoanálisis, 7ª conferencia. Contenido manifiesto del sueño y
+                pensamientos oníricos latentes”. Obras completas, Tomo XV, Buenos Aires, Amorrortu, 1989</h5><hr><br>
+                <hr>
+
+            <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+
+            </div>
+        </div>
+    </div>
+
+        <!-- MCP5 -->
+    <div class="accordion-item item-practico">
+        <button class="accordion-header">
+            <span class="badge badge-practico">MCP 5</span>
+            <span class="titulo">5. Contenido manifiesto del sueño y pensamientos oníricos (1916-17)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S., (1916-17 [1915-17]) “Conferencias de introducción al psicoanálisis, 7ª conferencia. Contenido manifiesto del sueño y
+                pensamientos oníricos latentes”. Obras completas, Tomo XV, Buenos Aires, Amorrortu, 1989</h5><hr><br>
+                <hr>
+
+            <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MCP6 -->
+    <div class="accordion-item item-practico">
+        <button class="accordion-header">
+            <span class="badge badge-practico">MCP 6</span>
+            <span class="titulo">6. Contenido manifiesto del sueño y pensamientos oníricos (1916-17)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S., (1916-17 [1915-17]) “Conferencias de introducción al psicoanálisis, 7ª conferencia. Contenido manifiesto del sueño y
+                pensamientos oníricos latentes”. Obras completas, Tomo XV, Buenos Aires, Amorrortu, 1989</h5><hr><br>
+                
+                <hr>
+
+            <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MCP7 -->
+    <div class="accordion-item item-practico">
+        <button class="accordion-header">
+            <span class="badge badge-practico">MCP 7</span>
+            <span class="titulo">7. Contenido manifiesto del sueño y pensamientos oníricos (1916-17)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S., (1916-17 [1915-17]) “Conferencias de introducción al psicoanálisis, 7ª conferencia. Contenido manifiesto del sueño y
+                pensamientos oníricos latentes”. Obras completas, Tomo XV, Buenos Aires, Amorrortu, 1989</h5><hr><br>
+                
+                <hr>
+
+            <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MCP8 -->
+    <div class="accordion-item item-practico">
+        <button class="accordion-header">
+            <span class="badge badge-practico">MCP 8</span>
+            <span class="titulo">8. Contenido manifiesto del sueño y pensamientos oníricos (1916-17)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S., (1916-17 [1915-17]) “Conferencias de introducción al psicoanálisis, 7ª conferencia. Contenido manifiesto del sueño y
+                pensamientos oníricos latentes”. Obras completas, Tomo XV, Buenos Aires, Amorrortu, 1989</h5><hr><br>
+                <hr>
+
+            <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN SEMINARIOS -->
+    <h2 class="section-divider section-seminario">Seminarios</h2>
+
+    <div class="info-box info-seminario">
+        <strong>Módulo B, Seminarios: Resistencia y surgimiento de una praxis inédita</strong> (Clases 4 y 5). 
+        <strong>Contenidos:</strong> La resistencia como fundamento del aparato psíquico. Idea de cadena de asociaciones y ordenamiento del
+        material psíquico en triple estratificación. Resistencia de asociación y dinámica de las representaciones.
+        Idea de la cura: llenado de lagunas mnémicas, abreacción. Primera respuesta al problema clínico de la
+        readmisión: reproducción de las impresiones patógenas causadoras con exteriorización de afecto. El
+        síntoma neoproducido. Tarea del psicoterapeuta: artificio técnico y obstáculos en la cura. Surgimiento de
+        una praxis inédita como respuesta al encuentro con la transferencia como motivo particular de resistencia. Transferencia: compulsión y espejismo. 
+    </div>
+
+    <!-- MBS1 -->
+    <div class="accordion-item item-seminario">
+        <button class="accordion-header">
+            <span class="badge badge-seminario">MBS 1</span>
+            <span class="titulo">4. Sobre la psicoterapia de la histeria (1893 [1895]).</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. (1893 [1895]). “Capítulo IV. Sobre la psicoterapia de la histeria
+(Freud). Punto 2 y 3. Estudios sobre la histeria (Breuer y Freud)”. En Obras
+completas, Tomo II. Buenos Aires. Amorrortu. 2012.</h5><hr><br>
+<p>Sigmund Freud describe la transición metodológica desde el uso de la hipnosis hacia una técnica basada en el esfuerzo y la asociación dirigida, motivada por el hallazgo de que no todos los pacientes son hipnotizables. A través del <span style="background:#cff4fc; padding:2px 5px; border-radius:3px; font-weight:600; color:#055160;">«procedimiento de la presión»</span> —artificio técnico consistente en aplicar presión manual sobre la frente del paciente para forzar la emergencia de recuerdos—, el autor descubre que el olvido histérico no es una falla de la memoria, sino un <span style="color:#dc3545; font-weight:600;">«no querer saber»</span> activo. Este fenómeno se origina en la <span style="background:#d1e7dd; padding:2px 5px; border-radius:3px; font-weight:600; color:#146c43;">«defensa»</span>, un acto de voluntad por el cual el yo repele una <b style="color:#6f42c1;">«representación inconciliable»</b>, es decir, una vivencia o pensamiento de naturaleza penosa (como la vergüenza o el reproche) que choca con los valores del sujeto. Al ser desalojada de la conciencia, la excitación ligada a esa idea se traslada al cuerpo mediante la <span style="background:#cff4fc; padding:2px 5px; border-radius:3px; font-weight:600; color:#055160;">«conversión»</span>, generando el síntoma somático.</p>
+
+<p>El trabajo terapéutico revela que el material olvidado ofrece una <span style="background:#fff3cd; padding:2px 5px; border-radius:3px; font-weight:600; border-left:3px solid #fd7e14;">«resistencia»</span> proporcional a la fuerza que originalmente produjo la represión. Freud sostiene que esta resistencia no es un simple obstáculo, sino <i>la misma fuerza defensiva del yo</i> que ahora contraría el retorno del recuerdo. Para superar este impedimento, el analista debe desovillar la compleja <b style="color:#0d6efd;">«organización del material patógeno»</b>, la cual se presenta como una estructura multidimensional con una triple estratificación: un <span style="border-left:3px solid #0d6efd; padding-left:4px; font-style:italic;">orden lineal-cronológico</span> (temas organizados como un archivo), un <span style="border-left:3px solid #6f42c1; padding-left:4px; font-style:italic;">orden concéntrico</span> (estratos de resistencia creciente hacia el núcleo traumático) y un <span style="border-left:3px solid #198754; padding-left:4px; font-style:italic;">orden lógico</span> (hilos de pensamiento ramificados). Esta complejidad explica la <b style="color:#6f42c1;">«sobre-determinación»</b> o comando múltiple, propiedad por la cual un solo síntoma puede estar ligado a múltiples hilos asociativos y núcleos de conflicto.</p>
+
+<p>Durante el análisis, el proceso puede verse perturbado por la <b style="color:#842029;">«trasferencia»</b>, un fenómeno donde el paciente proyecta sobre la figura del médico afectos y representaciones reprimidas. Esto ocurre mediante un <span style="background:#f8f9fa; padding:2px 4px; border-radius:3px; font-weight:600; border:1px solid #dee2e6;">«enlace falso»</span>, una asociación errónea en la que el paciente vincula un deseo o reproche del pasado con la persona del terapeuta en el presente. Freud subraya que este obstáculo debe ser integrado al análisis y vuelto consciente para que el trabajo progrese. El objetivo final de la psicoterapia catártica es <i style="color:#146c43; font-weight:500;">desarticular la resistencia y reintegrar el material reprimido a la conciencia</i>, permitiendo que la energía psíquica encuentre un destino normal. De este modo, la cura no promete una felicidad absoluta, sino la <span style="background:#e9ecef; padding:2px 5px; border-radius:3px; font-weight:600;">transformación de la miseria histérica en un infortunio ordinario</span>, devolviendo al sujeto la capacidad de defender su equilibrio anímico frente a las peripecias de la vida.</p>
+                    <hr>
+
+                    <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+                                    
+            </div>
+        </div>
+    </div>
+
+    <!-- SECCIÓN TEÓRICOS -->
+    <h2 class="section-divider section-teorico">Teóricos</h2>
+
+    <div class="info-box info-teorico">
+        <strong>Módulo B, Teóricos: Teoría de la defensa</strong> (Clases 4 y 5). 
+        <strong>Contenidos:</strong> Nociones, conceptos y supuestos a
+        desarrollar para las neuropsicosis de defensa. Etiología sexual. Conflicto y defensa. Fuente independiente
+        de desprendimiento de displacer. Defensa y estructuras clínicas. Elección de neurosis. Primer estatuto del
+        yo. Escisión de la conciencia.
+    </div>
+
+    <!-- MBT1 -->
+    <div class="accordion-item item-teorico">
+        <button class="accordion-header">
+            <span class="badge badge-teorico">MBT 1</span>
+            <span class="titulo">5. Manuscrito K. Las neurosis de defensa. (1896)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. (1896). Manuscrito K. Las neurosis de defensa. (Un cuento de
+                Navidad) (1° de enero de1896)”. En Obras completas, Tomo I. Buenos Aires.
+                Amorrortu. 1988, pp. 260-262.
+                </h5><hr><br>
+
+                <p>Sigmund Freud postula que las <b style="color:#0d6efd;">«neurosis de defensa»</b> son desviaciones patológicas de estados afectivos normales (como el conflicto, el reproche o la mortificación) que surgen cuando el yo intenta protegerse de representaciones psíquicas que le generan <i style="color:#dc3545; font-weight:500;">displacer</i>. Estas afecciones comparten dos condiciones etiológicas fundamentales: deben ser de <span style="background:#fff3cd; padding:2px 4px; border-radius:3px; font-weight:600;">índole sexual</span> y ocurrir durante la <span style="background:#fff3cd; padding:2px 4px; border-radius:3px; font-weight:600;">infancia</span>. El núcleo dinámico de la patología reside en el <b style="color:#6f42c1;">«efecto retardado» (Nachträglichkeit)</b>, un proceso singular por el cual una vivencia infantil, que no despertó una reacción masiva en su momento, se vuelve traumática años después; esto ocurre porque la <i>maduración de la pubertad</i> otorga al sujeto una nueva comprensión sexual que permite que el recuerdo desprenda un displacer más intenso que la experiencia original.</p>
+
+                <p>La trayectoria de estas afecciones sigue una fórmula evolutiva constante. Tras la vivencia traumática inicial, el yo recurre a la <span style="background:#d1e7dd; padding:2px 5px; border-radius:3px; font-weight:600; color:#146c43;">«represión»</span>, entendida como el esfuerzo de desalojo de una representación fuera de la conciencia. A esto le sigue un periodo de salud aparente que culmina inevitablemente en el <span style="background:#fff3cd; padding:2px 5px; border-radius:3px; font-weight:600; border-left:3px solid #fd7e14;">«retorno de lo reprimido»</span>, fase donde el material oculto reaparece de forma desfigurada y se enfrenta al yo, dando lugar a los <span style="background:#e9ecef; padding:2px 5px; border-radius:3px; font-weight:600;">«síntomas de compromiso»</span>. Estos síntomas son formaciones psíquicas que resultan de una solución intermedia entre el deseo reprimido que puja por salir y la defensa del yo que intenta sofocarlo, manifestándose de forma distinta según la estructura de la neurosis.</p>
+
+                <p>En la <b style="color:#6f42c1;">«neurosis obsesiva»</b>, el afecto central es el <span style="color:#dc3545; font-weight:600;">«reproche»</span> —un autorreproche por una vivencia de placer activa en la infancia— que retorna transformado en escrupulosidad moral o en ideas obsesivas ajenas al sujeto. Para combatirlas, el yo desarrolla la <span style="background:#cff4fc; padding:2px 4px; border-radius:3px; font-weight:600; color:#055160;">«defensa secundaria»</span>, que consiste en medidas adicionales como ceremoniales protectores u obsesiones caviladoras. Por el contrario, la <b style="color:#842029;">«paranoia»</b> se fundamenta en la <span style="color:#842029; font-weight:600;">«proyección»</span>, un mecanismo defensivo que atribuye a otros el displacer interno, transformando el autorreproche en <i>desconfianza y delirio de persecución</i>. Cuando la defensa fracasa en este cuadro, se produce un <span style="background:#f8d7da; padding:2px 5px; border-radius:3px; font-weight:600; color:#842029; border-left:3px solid #dc3545;">«avasallamiento del yo»</span>, donde la personalidad es remodelada por completo por el delirio. Finalmente, la <b style="color:#0d6efd;">«histeria»</b> requiere una vivencia primaria de carácter <span style="border-left:3px solid #0d6efd; padding-left:4px; font-style:italic;">pasivo y displacentero</span>. En este caso, la represión opera mediante una <span style="background:#f8f9fa; padding:2px 4px; border-radius:3px; font-weight:600; border:1px solid #dee2e6;">«representación-frontera»</span>, un fragmento del recuerdo que permanece vinculado al yo consciente pero que subroga o representa al resto del material traumático re
+
+                <hr>
+                <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MBT2 -->
+    <div class="accordion-item item-teorico">
+        <button class="accordion-header">
+            <span class="badge badge-teorico">MBT 2</span>
+            <span class="titulo">6. Carta 125 (1899)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. (1899). “Carta 125 (9 de diciembre de 1899)”. En Obras completas, Tomo I. Buenos Aires. Amorrortu. 1988. </h5><hr><br>
+                <p>Sigmund Freud aborda en este texto el problema de la <b style="color:#0d6efd;">«elección de neurosis»</b>, concepto que refiere a las razones por las cuales un individuo desarrolla una afección psíquica específica —como la <i style="color:#0d6efd;">histeria</i>— en lugar de otra —como la <i style="color:#842029;">paranoia</i>—. Tras abandonar hipótesis anteriores basadas únicamente en la edad en que ocurrieron los traumas, Freud propone una explicación fundamentada en los <span style="background:#fff3cd; padding:2px 4px; border-radius:3px; font-weight:600;">estratos del desarrollo sexual</span>. Define el <b style="color:#6f42c1;">«autoerotismo»</b> como el nivel más primitivo de la sexualidad, caracterizado por una búsqueda de sensación satisfactoria puramente local que no requiere de un objeto externo ni de una meta psicosexual compleja. Por encima de este estrato se sitúa el <b style="color:#6f42c1;">«aloerotismo»</b>, etapa en la que el interés sexual se dirige hacia los otros (incluyendo las corrientes homo y hetero eróticas).</p>
+
+                <p>Bajo este esquema, la <b style="color:#0d6efd;">histeria</b> y la <b style="color:#6f42c1;">neurosis obsesiva</b> se clasifican como afecciones de carácter <span style="background:#cff4fc; padding:2px 4px; border-radius:3px; font-weight:600; color:#055160;">aloerótico</span>. En estos cuadros, el mecanismo psíquico principal es la <span style="background:#d1e7dd; padding:2px 5px; border-radius:3px; font-weight:600; color:#146c43;">«identificación»</span>, proceso por el cual el sujeto asimila rasgos o estados de la persona amada para integrarlos en su propia psique. Por el contrario, la <b style="color:#842029;">paranoia</b> es descrita como un retroceso o un <span style="color:#dc3545; font-weight:600;">«asalto»</span> de la corriente autoerótica sobre el individuo. En esta patología, el sujeto <i>disuelve las identificaciones previamente alcanzadas</i>, restituye mentalmente a las figuras amadas de la infancia que habían sido abandonadas y termina por <span style="border-left:3px solid #dc3545; padding-left:4px; font-style:italic; color:#b35d00;">fragmentar al yo en personas ajenas</span>. Según Freud, este retorno a los vínculos particulares del autoerotismo con el <b style="color:#6f42c1;">«yo originario»</b> —la estructura incipiente de la personalidad vinculada a las satisfacciones primordiales— es lo que permite comprender el carácter clínico y la <span style="background:#f8d7da; padding:2px 5px; border-radius:3px; font-weight:600; color:#842029;">desintegración de la identidad</span> propios de la paranoia.</p>
+            <hr>
+            <h5>Ahora, explicado de manera muy simple.</h5><hr><br>
+                                
+            </div>
+        </div>
+    </div>
+
+    <!-- MBT3 -->
+    <div class="accordion-item item-teorico">
+        <button class="accordion-header">
+            <span class="badge badge-teorico">MBT 3</span>
+            <span class="titulo">7. Justificación de separar la neurastenia (1894)</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. (1894). Sobre la justificación de separar la neurastenia de un determinado síndrome en calidad de “neurosis de angustia”. En Obras
+                completas, Tomo III. Buenos Aires. Amorrortu 1988.</h5><hr><br>
+
+                    <p>Sigmund Freud establece una distinción fundamental entre las <b style="color:#0d6efd;">parálisis motrices orgánicas</b> y las <b style="color:#6f42c1;">histéricas</b> partiendo de una base neuroanatómica. En las afecciones orgánicas, reconoce la <i style="font-weight:500;">«parálisis de proyección»</i> (perifero-espinal), donde la lesión afecta fibras individuales de manera detallada debido a que la periferia se proyecta punto por punto en la médula, y la <i style="font-weight:500;">«parálisis de representación»</i> (cerebral), que ataca segmentos corporales completos o funciones complejas debido a que la corteza cerebral representa grupos de elementos periféricos. Si bien la histeria simula inicialmente a la parálisis cerebral al presentarse <span style="background:#fff3cd; padding:2px 4px; border-radius:3px;">«en masse»</span> (afectando extremidades o aparatos motores completos), <b>se desvía radicalmente de las leyes anatómicas</b>; por ejemplo, puede paralizar un hombro de forma aislada o un brazo de forma absoluta sin afectar el rostro, <i style="color:#dc3545;">ignorando la distribución real de los haces nerviosos</i>.</p>
+
+                    <p>Esta divergencia permite a Freud afirmar que la histeria <b>ignora la anatomía del sistema nervioso</b> y se rige, en cambio, por una <span style="background:#e9ecef; padding:2px 5px; border-radius:3px; font-weight:500;">«concepción vulgar»</span> o popular del cuerpo, fundamentada en percepciones visuales y táctiles cotidianas más que en el conocimiento científico. Así, la «lesión» en la histeria no es de carácter tisular —daño en el tejido físico—, ni siquiera una afección orgánica pasajera como el edema o la anemia, sino una <b style="color:#0d6efd; font-weight:600;">«lesión funcional o dinámica»</b>. Esto implica una alteración en la <i style="color:#6f42c1;">«accesibilidad asociativa»</i>: la representación mental del órgano (la idea del brazo, por ejemplo) queda <span style="border-left:3px solid #ffc107; padding-left:4px; font-style:italic;">aislada y no puede entrar en conexión con las otras ideas que constituyen el yo consciente</span>.</p>
+
+                    <p>Desde un enfoque psicológico, este aislamiento se produce porque la idea del órgano está <b style="color:#dc3545;">«saturada»</b> o fijada en una asociación dentro del subconsciente —aquella instancia psíquica cuyos contenidos no están presentes en la conciencia inmediata— con el recuerdo de un suceso traumático. Este recuerdo posee un elevado <span style="background:#d1e7dd; padding:2px 5px; border-radius:3px; color:#146c43; font-weight:600;">«valor afectivo»</span> o <span style="background:#d1e7dd; padding:2px 5px; border-radius:3px; color:#146c43; font-weight:600;">«monto de afecto»</span> (la carga emocional ligada a una impresión), el cual <b>monopoliza la representación del órgano</b> e impide que este responda a las impulsiones del sujeto.</p>
+
+                    <p>La resolución del síntoma solo es posible mediante la <span style="background:#d1e7dd; padding:2px 6px; border-radius:3px; font-weight:600; color:#0d6efd;">«abreacción»</span>, proceso por el cual el excedente de estímulo afectivo es eliminado a través de una reacción motriz adecuada o un trabajo psíquico consciente, lo que <i style="font-weight:500;">libera la representación del órgano</i> y restablece su capacidad de asociarse con el yo.</p>
+                
+                <hr>
+                <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+                    
+            </div>
+        </div>
+    </div>
+
+    <!-- MBT4 -->
+    <div class="accordion-item item-teorico">
+        <button class="accordion-header">
+            <span class="badge badge-teorico">MBT 4</span>
+            <span class="titulo"> FALTANTE</span>
+        </button>
+        <div class="accordion-content">
+            <div class="content-inner">
+                <h5>Freud, S. FALTANTE. En
+                Obras completas, Tomo III. Buenos Aires. Amorrortu. 1989.</h5><hr><br>
+                
+                <hr>
+                <h5>Ahora, explicado de manera sencilla.</h5><hr><br>
+         
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    document.querySelectorAll('.accordion-header').forEach(button => {
+        button.addEventListener('click', () => {
+            const accordionItem = button.parentElement;
+            const isOpen = accordionItem.classList.contains('active');
+
+            // Cerrar otros al abrir uno nuevo
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                item.classList.remove('active');
+                item.querySelector('.accordion-content').style.maxHeight = null;
+            });
+
+            if (!isOpen) {
+                accordionItem.classList.add('active');
+                const content = accordionItem.querySelector('.accordion-content');
+                content.style.maxHeight = content.scrollHeight + "px";
+            }
+        });
+    });
+</script>
+
+</body>
+</html>
